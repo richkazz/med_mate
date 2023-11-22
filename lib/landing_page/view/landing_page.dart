@@ -301,35 +301,43 @@ class DrugDetailPopUp extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CircleAvatar(
-                backgroundColor: AppColors.fieldFillColor,
-                child: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.edit_outlined,
-                    color: AppColors.black,
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.md,
+              AppSpacing.md,
+              AppSpacing.md,
+              AppSpacing.xs,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CircleAvatar(
+                  backgroundColor: AppColors.textFieldFillColor,
+                  child: IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.edit_outlined,
+                      color: AppColors.black,
+                    ),
                   ),
                 ),
-              ),
-              Text(
-                'Details',
-                style: theme.textTheme.titleMedium!
-                    .copyWith(fontWeight: FontWeight.bold),
-              ),
-              CircleAvatar(
-                backgroundColor: AppColors.fieldFillColor,
-                child: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.delete_outline_sharp,
-                    color: AppColors.black,
+                Text(
+                  'Details',
+                  style: theme.textTheme.titleMedium!
+                      .copyWith(fontWeight: FontWeight.bold),
+                ),
+                CircleAvatar(
+                  backgroundColor: AppColors.textFieldFillColor,
+                  child: IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.delete_outline_sharp,
+                      color: AppColors.black,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           const Divider(
             color: AppColors.dividerColor,
@@ -506,39 +514,89 @@ class _DrugsDetailPopUpActionsState extends State<DrugsDetailPopUpActions> {
   int currentIndex = 1;
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      showUnselectedLabels: true,
-      type: BottomNavigationBarType.fixed,
-      backgroundColor: AppColors.transparent,
-      selectedLabelStyle: ContentTextStyle.labelSmall,
-      elevation: 0,
-      items: const [
-        BottomNavigationBarItem(
-          activeIcon: Icon(Icons.close),
-          icon: Icon(Icons.close),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        DrugDetailPopUpActionButton(
           label: 'Skip',
+          onTap: () {
+            widget.onTap(0);
+          },
+          icon: CustomPaint(
+            painter: CirclePainter(
+                color: AppColors.primaryColor, radius: 13, strokeWidth: 2),
+            child: const Icon(
+              Icons.close,
+              color: AppColors.primaryColor,
+            ),
+          ),
         ),
-        BottomNavigationBarItem(
-          activeIcon: Icon(
-            Icons.check_circle,
+        DrugDetailPopUpActionButton(
+          label: 'Take now',
+          onTap: () {
+            widget.onTap(1);
+          },
+          icon: CustomPaint(
+            painter: CirclePainter(
+                filled: true,
+                color: AppColors.primaryColor,
+                radius: 18,
+                strokeWidth: 2),
+            child: const Icon(
+              Icons.check,
+              color: AppColors.white,
+            ),
+          ),
+        ),
+        DrugDetailPopUpActionButton(
+          label: 'Reschedule',
+          onTap: () {
+            widget.onTap(2);
+          },
+          icon: const Icon(
+            Icons.alarm,
+            color: AppColors.primaryColor,
             size: 30,
           ),
-          icon: Icon(Icons.check_circle_outline),
-          label: 'Take now',
-        ),
-        BottomNavigationBarItem(
-          activeIcon: Icon(Icons.alarm_rounded),
-          icon: Icon(Icons.alarm),
-          label: 'Reschedule',
         ),
       ],
-      currentIndex: currentIndex,
-      onTap: (val) {
-        setState(() {
-          currentIndex = val;
-        });
-        widget.onTap(val);
-      },
+    );
+  }
+}
+
+class DrugDetailPopUpActionButton extends StatelessWidget {
+  const DrugDetailPopUpActionButton({
+    required this.onTap,
+    required this.label,
+    required this.icon,
+    super.key,
+  });
+  final VoidCallback onTap;
+  final String label;
+  final Widget icon;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              onPressed: onTap,
+              icon: icon,
+            ),
+          ],
+        ),
+        Text(
+          label,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                fontWeight: FontWeight.w500,
+                color: AppColors.primaryColor,
+              ),
+        ),
+      ],
     );
   }
 }
@@ -607,21 +665,21 @@ class MedicationAvailableSectionOne extends StatelessWidget {
 }
 
 class CirclePainter extends CustomPainter {
-  CirclePainter({
-    required this.radius,
-    required this.color,
-    this.filled = false,
-  });
+  CirclePainter(
+      {required this.radius,
+      required this.color,
+      this.filled = false,
+      this.strokeWidth = 4.0});
   final double radius;
   final bool filled;
   final Color color;
-
+  final double strokeWidth;
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = color
       ..style = filled ? PaintingStyle.fill : PaintingStyle.stroke
-      ..strokeWidth = filled ? 0 : 4.0;
+      ..strokeWidth = filled ? 0 : strokeWidth;
 
     canvas.drawCircle(Offset(size.width / 2, size.height / 2), radius, paint);
   }
