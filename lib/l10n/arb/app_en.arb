@@ -1,0 +1,134 @@
+{
+    "@@locale": "en",
+    "counterAppBarTitle": "Counter",
+    "@counterAppBarTitle": {
+        "description": "Text shown in the AppBar of the Counter Page"
+    },
+    "trackMedicationSchedule": "Track your medication schedule",
+    "@trackMedicationSchedule": {
+      "description": "Text indicating the instruction to track medication schedule",
+      "type": "text",
+      "placeholders": {}
+    },
+    "medsTakenInstruction": "Tick off when your meds are taken and examine your daily schedule.",
+    "@medsTakenInstruction": {
+      "description": "Instruction for tracking medication intake and examining daily schedule",
+      "type": "text",
+      "placeholders": {}
+    },
+    "addMedication": "Add Medication",
+    "@addMedication": {
+      "description": "Text indicating the action to add a new medication",
+      "type": "text",
+      "placeholders": {}
+    },
+    "addMedicationQuestion": "What medication are you adding?",
+    "@addMedicationQuestion": {
+      "description": "Question prompting the user to specify the medication they are adding",
+      "type": "text",
+      "placeholders": {}
+    },
+    "enterMedication": "Enter the medication you are taking, as prescribed to you by a professional.",
+  "@enterMedication": {
+    "description": "Instruction prompting the user to enter the medication prescribed by a professional",
+    "type": "text",
+    "placeholders": {}
+  },
+  "search": "Search",
+  "@search": {
+    "description": "Text indicating the action to perform a search",
+    "type": "text",
+    "placeholders": {}
+  },
+  "next": "Next",
+  "@next": {
+    "description": "Text indicating the action to move to the next step or page",
+    "type": "text",
+    "placeholders": {}
+  },
+  "steps": "Steps",
+  "@steps": {
+    "description": "Text indicating steps or stages",
+    "type": "text",
+    "placeholders": {}
+  },
+  "medicationFormQuestion": "What form is the medication?",
+  "@medicationFormQuestion": {
+    "description": "Question prompting the user to specify the form of the medication",
+    "type": "text",
+    "placeholders": {}
+  },
+  "enterMedicationForm": "Enter the physical form of the medication you are prescribed.",
+  "@enterMedicationForm": {
+    "description": "Instruction prompting the user to enter the physical form of the prescribed medication",
+    "type": "text",
+    "placeholders": {}
+  },
+  "previous": "Previous",
+  "@previous": {
+    "description": "Text indicating the action to go back to the previous step or page",
+    "type": "text",
+    "placeholders": {}
+  },
+  "medicationPurposeQuestion": "What are you taking this medication for?",
+  "@medicationPurposeQuestion": {
+    "description": "Question prompting the user to specify the purpose of taking the medication",
+    "type": "text",
+    "placeholders": {}
+  },
+  "enterMedicalCondition": "Enter the medical condition for which you are taking the medication.",
+  "@enterMedicalCondition": {
+    "description": "Instruction prompting the user to enter the medical condition for which they are taking the medication",
+    "type": "text",
+    "placeholders": {}
+  },
+  "medicationFrequencyQuestion": "How often do you need to take it?",
+  "@medicationFrequencyQuestion": {
+    "description": "Question prompting the user to specify the frequency of taking the medication",
+    "type": "text",
+    "placeholders": {}
+  },
+  "enterMedicationFrequency": "Enter the amount of times required for you to take the medication.",
+  "@enterMedicationFrequency": {
+    "description": "Instruction prompting the user to enter the frequency or amount of times to take the medication",
+    "type": "text",
+    "placeholders": {}
+  },
+  "firstDoseTimeQuestion": "What time do you need to take the first dose?",
+  "@firstDoseTimeQuestion": {
+    "description": "Question prompting the user to specify the time for the first dose of medication",
+    "type": "text",
+    "placeholders": {}
+  },
+  "enterFirstDoseDetails": "Enter the specific amount and time you are required to take the first dose of the medication.",
+  "@enterFirstDoseDetails": {
+    "description": "Instruction prompting the user to enter the specific amount and time for the first dose of the medication",
+    "type": "text",
+    "placeholders": {}
+  },
+  "secondDoseTimeQuestion": "What time do you need to take the second dose?",
+  "@secondDoseTimeQuestion": {
+    "description": "Question prompting the user to specify the time for the second dose of medication",
+    "type": "text",
+    "placeholders": {}
+  },
+  "enterSecondDoseDetails": "Enter the specific amount and time you are required to take the second dose of the medication.",
+  "@enterSecondDoseDetails": {
+    "description": "Instruction prompting the user to enter the specific amount and time for the second dose of the medication",
+    "type": "text",
+    "placeholders": {}
+  },
+  "almostDone": "You’re almost done",
+  "@almostDone": {
+    "description": "Text indicating that the user is almost finished with a process or task",
+    "type": "text",
+    "placeholders": {}
+  },
+  "takeMedicationInstruction": "Enter the way you are required to take the medication.",
+  "@takeMedicationInstruction": {
+    "description": "Instruction prompting the user to enter the method or way they are required to take the medication",
+    "type": "text",
+    "placeholders": {}
+  }
+
+}
