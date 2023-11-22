@@ -1,10 +1,8 @@
-import 'dart:math';
-import 'package:domain/domain.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:app_ui/app_ui.dart';
+import 'package:domain/domain.dart';
 import 'package:flutter/material.dart';
-import 'package:med_mate/add_med/add_med.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:med_mate/l10n/l10n.dart';
 import 'package:med_mate/landing_page/cubit/landing_page_cubit.dart';
 import 'package:med_mate/landing_page/widget/widgets.dart';
@@ -15,7 +13,6 @@ class LandingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final drugs = context
         .select<LandingPageCubit, List<Drug>>((value) => value.state.drugs);
     return Scaffold(
@@ -118,17 +115,25 @@ class MedicationAvailable extends StatelessWidget {
         const SizedBox(
           height: 60,
         ),
-        Wrap(
-          spacing: AppSpacing.lg,
-          runSpacing: AppSpacing.md,
-          children: [
-            ...context.read<LandingPageCubit>().state.sortedDrugs.map(
-                  (e) => DrugDetailInherited(
-                    drug: e,
-                    child: DrugDetailItem(theme: theme),
-                  ),
-                ),
-          ],
+        BlocSelector<LandingPageCubit, LandingPageState, int>(
+          selector: (state) => state.drugs.length,
+          builder: (context, state) {
+            return Padding(
+              padding: const EdgeInsets.all(AppSpacing.sm),
+              child: Wrap(
+                spacing: AppSpacing.lg,
+                runSpacing: AppSpacing.md,
+                children: [
+                  ...context.read<LandingPageCubit>().state.sortedDrugs.map(
+                        (e) => DrugDetailInherited(
+                          drug: e,
+                          child: DrugDetailItem(theme: theme),
+                        ),
+                      ),
+                ],
+              ),
+            );
+          },
         ),
       ],
     );
@@ -160,75 +165,380 @@ class DrugDetailInherited extends InheritedWidget {
 
 class DrugDetailItem extends StatelessWidget {
   const DrugDetailItem({
-    super.key,
     required this.theme,
+    super.key,
   });
 
   final ThemeData theme;
 
   @override
   Widget build(BuildContext context) {
+    Future<void> _showDialog(BuildContext context, Drug drug) async {
+      await showDialog<void>(
+        context: context,
+        builder: (context) => DrugDetailPopUp(
+          theme: theme,
+          drug: drug,
+        ),
+      );
+    }
+
     final drug = DrugDetailInherited.of(context).drug;
-    return DecoratedBoxWithPrimaryBorder(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(minWidth: 90),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacing.lg,
-            AppSpacing.lg,
-            AppSpacing.lg,
-            AppSpacing.lg,
+    return InkWell(
+      onTap: () => _showDialog(context, drug),
+      child: DecoratedBoxWithPrimaryBorder(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            minWidth: 90,
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Assets.icons.pill.svg(package: 'app_ui'),
-                      Text(
-                        drug.name,
-                        softWrap: true,
-                        style: theme.textTheme.bodyMedium!
-                            .copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        'Dose: ${drug.doseTimeAndCount.first.dosageCount}',
-                        style: theme.textTheme.bodySmall!
-                            .copyWith(fontWeight: FontWeight.w300),
-                      ),
-                      Text(
-                        drug.orderOfDrugIntake,
-                        style: theme.textTheme.bodySmall!.copyWith(
-                          fontWeight: FontWeight.w300,
-                          color: AppColors.textDullColor,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              AppSpacing.lg,
+              AppSpacing.lg,
+              AppSpacing.lg,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Assets.icons.pill.svg(package: 'app_ui'),
+                        SizedBox(
+                          width: 90,
+                          child: Text(
+                            drug.name,
+                            softWrap: true,
+                            style: theme.textTheme.bodyMedium!
+                                .copyWith(fontWeight: FontWeight.bold),
+                          ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: AppSpacing.md,
-                      ),
-                      Text(
-                        drug.doseTimeAndCount.first.dosageTimeToBeTaken
-                            .formatTime,
-                        style: theme.textTheme.bodySmall!.copyWith(
-                          fontWeight: FontWeight.bold,
+                        Text(
+                          'Dose: ${drug.doseTimeAndCount.first.dosageCount}',
+                          style: theme.textTheme.bodySmall!
+                              .copyWith(fontWeight: FontWeight.w300),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
+                        SizedBox(
+                          width: 90,
+                          child: Text(
+                            drug.orderOfDrugIntake,
+                            style: theme.textTheme.bodySmall!.copyWith(
+                              fontWeight: FontWeight.w300,
+                              color: AppColors.textDullColor,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: AppSpacing.md,
+                        ),
+                        Text(
+                          drug.doseTimeAndCount.first.dosageTimeToBeTaken
+                              .formatTime,
+                          style: theme.textTheme.bodySmall!.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class SizeDependentWidget extends StatelessWidget {
+  const SizeDependentWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        // Use the width of the text widget to set the size of this widget
+        final width = constraints.maxWidth;
+
+        // Use the width to set the size of the widget
+        return SizedBox(
+          width: width,
+          child: const Divider(
+            color: AppColors.dividerColor,
+          ),
+        );
+      },
+    );
+  }
+}
+
+class DrugDetailPopUp extends StatelessWidget {
+  const DrugDetailPopUp({
+    required this.theme,
+    required this.drug,
+    super.key,
+  });
+
+  final ThemeData theme;
+  final Drug drug;
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: AppColors.white,
+      surfaceTintColor: AppColors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CircleAvatar(
+                backgroundColor: AppColors.fieldFillColor,
+                child: IconButton(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.edit_outlined,
+                    color: AppColors.black,
+                  ),
+                ),
+              ),
+              Text(
+                'Details',
+                style: theme.textTheme.titleMedium!
+                    .copyWith(fontWeight: FontWeight.bold),
+              ),
+              CircleAvatar(
+                backgroundColor: AppColors.fieldFillColor,
+                child: IconButton(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.delete_outline_sharp,
+                    color: AppColors.black,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const Divider(
+            color: AppColors.dividerColor,
+          ),
+          Assets.icons.pill.svg(package: 'app_ui'),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                drug.name,
+                softWrap: true,
+                style: theme.textTheme.titleSmall!.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizeDependentWidget(),
+            ],
+          ),
+          const SizedBox(
+            height: AppSpacing.md,
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Assets.icons.calendar03
+                  .svg(package: 'app_ui', width: 20, height: 20),
+              const SizedBox(
+                width: AppSpacing.sm,
+              ),
+              Text(
+                'Scheduled for '
+                '${drug.doseTimeAndCount.first.dosageTimeToBeTaken.formatTime}',
+                softWrap: true,
+                style: theme.textTheme.labelSmall!.copyWith(
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: AppSpacing.sm,
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Assets.icons.taskDaily02
+                  .svg(package: 'app_ui', width: 20, height: 20),
+              const SizedBox(
+                width: AppSpacing.xs,
+              ),
+              Text(
+                drug.orderOfDrugIntake,
+                softWrap: true,
+                style: theme.textTheme.labelSmall!.copyWith(
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: AppSpacing.lg,
+          ),
+          DrugsDetailPopUpActions(
+            onTap: (value) {
+              Navigator.pop(context);
+              if (value == 1) {
+                _showConfirmDrugIntakeDialog(context, drug, theme);
+              }
+            },
+          ),
+          const SizedBox(
+            height: AppSpacing.lg,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+Future<void> _showConfirmDrugIntakeDialog(
+    BuildContext context, Drug drug, ThemeData theme) async {
+  await showDialog<void>(
+    context: context,
+    builder: (context) => ConfirmDrugIntakeDialog(
+      theme: theme,
+      drug: drug,
+    ),
+  );
+}
+
+class ConfirmDrugIntakeDialog extends StatelessWidget {
+  const ConfirmDrugIntakeDialog({
+    required this.theme,
+    required this.drug,
+    super.key,
+  });
+
+  final ThemeData theme;
+  final Drug drug;
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: AppColors.white,
+      surfaceTintColor: AppColors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconWithRoundedBackground(
+                color: AppColors.icon2BackgroundColor,
+                icon: Assets.icons.pill.svg(package: 'app_ui')),
+            const SizedBox(
+              height: AppSpacing.md,
+            ),
+            Text(
+              'You are about to take one dose of ${drug.name}',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.titleSmall!
+                  .copyWith(fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(
+              height: AppSpacing.md,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                SizedBox(
+                  width: 90,
+                  height: 35,
+                  child: AppButton.primaryOutlined(
+                    borderRadius: 5,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Cancel'),
+                  ),
+                ),
+                SizedBox(
+                  width: 90,
+                  height: 35,
+                  child: AppButton.primary(
+                    borderRadius: 5,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Confirm'),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class DrugsDetailPopUpActions extends StatefulWidget {
+  const DrugsDetailPopUpActions({
+    required this.onTap,
+    super.key,
+  });
+  final ValueChanged<int> onTap;
+  @override
+  State<DrugsDetailPopUpActions> createState() =>
+      _DrugsDetailPopUpActionsState();
+}
+
+class _DrugsDetailPopUpActionsState extends State<DrugsDetailPopUpActions> {
+  int currentIndex = 1;
+  @override
+  Widget build(BuildContext context) {
+    return BottomNavigationBar(
+      showUnselectedLabels: true,
+      type: BottomNavigationBarType.fixed,
+      backgroundColor: AppColors.transparent,
+      selectedLabelStyle: ContentTextStyle.labelSmall,
+      elevation: 0,
+      items: const [
+        BottomNavigationBarItem(
+          activeIcon: Icon(Icons.close),
+          icon: Icon(Icons.close),
+          label: 'Skip',
+        ),
+        BottomNavigationBarItem(
+          activeIcon: Icon(
+            Icons.check_circle,
+            size: 30,
+          ),
+          icon: Icon(Icons.check_circle_outline),
+          label: 'Take now',
+        ),
+        BottomNavigationBarItem(
+          activeIcon: Icon(Icons.alarm_rounded),
+          icon: Icon(Icons.alarm),
+          label: 'Reschedule',
+        ),
+      ],
+      currentIndex: currentIndex,
+      onTap: (val) {
+        setState(() {
+          currentIndex = val;
+        });
+        widget.onTap(val);
+      },
     );
   }
 }

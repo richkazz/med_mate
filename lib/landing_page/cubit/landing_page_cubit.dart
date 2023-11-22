@@ -14,7 +14,7 @@ class LandingPageCubit extends Cubit<LandingPageState> {
 
   void saveNewDrugAdded(Drug drug) {
     final newListOfDrugs = [...state.drugs, drug];
-    emit(state.copyWith(drugs: newListOfDrugs));
+    emit(state.copyWith(drugs: newListOfDrugs.toList()));
   }
 
   void showCalenderToSelect() {
@@ -53,5 +53,5 @@ class LandingPageState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [...drugs, landingPageEnum];
+  List<Object?> get props => [...drugs, landingPageEnum, drugs.length];
 }
