@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:med_mate/app/app.dart';
 import 'package:med_mate/home/home.dart';
+import 'package:med_mate/landing_page/cubit/landing_page_cubit.dart';
 import 'package:med_mate/landing_page/landing_page.dart';
 
 class HomeView extends StatelessWidget {

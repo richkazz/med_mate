@@ -82,18 +82,8 @@ class UIConstants {
     'Intramuscular Depot (Long-acting injectable)',
   ];
 
-  ///list of possible drug intake intervals
-  static List<String> drugIntakeIntervals = [
-    'Once a Day',
-    'Twice a Day',
-    'Three Times a Day',
-    'Four Times a Day',
-    'Every 6 Hours',
-    'Every 8 Hours',
-    'Every 12 Hours',
-    'Every 24 Hours',
-    'Every Morning',
-    'Every Evening',
+  ///list of possible drug intake order
+  static List<String> drugIntakeOrder = [
     'Before Meals',
     'After Meals',
     'With Meals',
@@ -117,6 +107,21 @@ class UIConstants {
     'With Milk',
     'Sublingually (Under the tongue)',
     'Intramuscular Depot (Long-acting injectable)',
+  ];
+
+  ///list of possible drug intake intervals
+  static List<String> drugIntakeIntervals = [
+    'Once a Day',
+    'Twice a Day',
+    'Three Times a Day',
+    'Four Times a Day',
+    'Every 6 Hours',
+    'Every 8 Hours',
+    'Every 12 Hours',
+    'Every 24 Hours',
+    'Every Morning',
+    'Every Evening',
+    'Before Meals',
   ];
 
   /// A list of some of the common drugs that can be found in Nigeria

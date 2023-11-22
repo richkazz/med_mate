@@ -1,6 +1,63 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+
+@immutable
+class DosageTimeAndCount {
+  final TimeOfDay dosageTimeToBeTaken;
+  final int dosageCount;
+  DosageTimeAndCount({
+    required this.dosageTimeToBeTaken,
+    required this.dosageCount,
+  });
+
+  DosageTimeAndCount copyWith({
+    TimeOfDay? dosageTimeToBeTaken,
+    int? dosageCount,
+  }) {
+    return DosageTimeAndCount(
+      dosageTimeToBeTaken: dosageTimeToBeTaken ?? this.dosageTimeToBeTaken,
+      dosageCount: dosageCount ?? this.dosageCount,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'dosageTimeToBeTaken': dosageTimeToBeTaken.toString(),
+      'dosageCount': dosageCount,
+    };
+  }
+
+  factory DosageTimeAndCount.fromMap(Map<String, dynamic> map) {
+    return DosageTimeAndCount(
+      dosageTimeToBeTaken: TimeOfDay.now(),
+      dosageCount: map['dosageCount'] as int,
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory DosageTimeAndCount.fromJson(String source) =>
+      DosageTimeAndCount.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() =>
+      'DosageTimeAndCount(dosageTimeToBeTaken: $dosageTimeToBeTaken, dosageCount: $dosageCount)';
+
+  @override
+  bool operator ==(covariant DosageTimeAndCount other) {
+    if (identical(this, other)) return true;
+
+    return other.dosageTimeToBeTaken == dosageTimeToBeTaken &&
+        other.dosageCount == dosageCount;
+  }
+
+  @override
+  int get hashCode => dosageTimeToBeTaken.hashCode ^ dosageCount.hashCode;
+}
 
 @immutable
 class Drug {
@@ -10,8 +67,7 @@ class Drug {
   final String drugIntakeFrequency;
   final DateTime? drugIntakeIntervalStart;
   final DateTime? drugIntakeIntervalEnd;
-  final DateTime firstDoseTime;
-  final DateTime secondDoseTime;
+  final List<DosageTimeAndCount> doseTimeAndCount;
 
   ///Can be before or after eating or something related
   final String orderOfDrugIntake;
@@ -20,11 +76,10 @@ class Drug {
     required this.intakeForm,
     required this.reasonForDrug,
     required this.drugIntakeFrequency,
-    required this.drugIntakeIntervalStart,
-    required this.drugIntakeIntervalEnd,
-    required this.firstDoseTime,
-    required this.secondDoseTime,
+    required this.doseTimeAndCount,
     required this.orderOfDrugIntake,
+    this.drugIntakeIntervalStart,
+    this.drugIntakeIntervalEnd,
   });
 
   Drug copyWith({
@@ -34,8 +89,7 @@ class Drug {
     String? drugIntakeFrequency,
     DateTime? drugIntakeIntervalStart,
     DateTime? drugIntakeIntervalEnd,
-    DateTime? firstDoseTime,
-    DateTime? secondDoseTime,
+    List<DosageTimeAndCount>? doseTimeAndCount,
     String? orderOfDrugIntake,
   }) {
     return Drug(
@@ -47,8 +101,7 @@ class Drug {
           drugIntakeIntervalStart ?? this.drugIntakeIntervalStart,
       drugIntakeIntervalEnd:
           drugIntakeIntervalEnd ?? this.drugIntakeIntervalEnd,
-      firstDoseTime: firstDoseTime ?? this.firstDoseTime,
-      secondDoseTime: secondDoseTime ?? this.secondDoseTime,
+      doseTimeAndCount: doseTimeAndCount ?? this.doseTimeAndCount,
       orderOfDrugIntake: orderOfDrugIntake ?? this.orderOfDrugIntake,
     );
   }
@@ -57,12 +110,11 @@ class Drug {
     drugIntakeFrequency: '',
     drugIntakeIntervalEnd: DateTime.now(),
     drugIntakeIntervalStart: DateTime.now(),
-    firstDoseTime: DateTime.now(),
+    doseTimeAndCount: [],
     intakeForm: '',
     name: '',
     orderOfDrugIntake: '',
     reasonForDrug: '',
-    secondDoseTime: DateTime.now(),
   );
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -73,8 +125,7 @@ class Drug {
       'drugIntakeIntervalStart':
           drugIntakeIntervalStart?.millisecondsSinceEpoch,
       'drugIntakeIntervalEnd': drugIntakeIntervalEnd?.millisecondsSinceEpoch,
-      'firstDoseTime': firstDoseTime,
-      'secondDoseTime': secondDoseTime,
+      'doseTimeAndCount': doseTimeAndCount.map((x) => x.toMap()).toList(),
       'orderOfDrugIntake': orderOfDrugIntake,
     };
   }
@@ -85,14 +136,19 @@ class Drug {
       intakeForm: map['intakeForm'] as String,
       reasonForDrug: map['reasonForDrug'] as String,
       drugIntakeFrequency: map['drugIntakeFrequency'] as String,
-      drugIntakeIntervalStart: DateTime.fromMillisecondsSinceEpoch(
-        map['drugIntakeIntervalStart'] as int,
+      drugIntakeIntervalStart: map['drugIntakeIntervalStart'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(
+              map['drugIntakeIntervalStart'] as int)
+          : null,
+      drugIntakeIntervalEnd: map['drugIntakeIntervalEnd'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(
+              map['drugIntakeIntervalEnd'] as int)
+          : null,
+      doseTimeAndCount: List<DosageTimeAndCount>.from(
+        (map['doseTimeAndCount'] as List<int>).map<DosageTimeAndCount>(
+          (x) => DosageTimeAndCount.fromMap(x as Map<String, dynamic>),
+        ),
       ),
-      drugIntakeIntervalEnd: DateTime.fromMillisecondsSinceEpoch(
-        map['drugIntakeIntervalEnd'] as int,
-      ),
-      firstDoseTime: map['firstDoseTime'] as DateTime,
-      secondDoseTime: map['secondDoseTime'] as DateTime,
       orderOfDrugIntake: map['orderOfDrugIntake'] as String,
     );
   }
@@ -104,7 +160,7 @@ class Drug {
 
   @override
   String toString() {
-    return 'Drug(name: $name, intakeForm: $intakeForm, reasonForDrug: $reasonForDrug, drugIntakeFrequency: $drugIntakeFrequency, drugIntakeIntervalStart: $drugIntakeIntervalStart, drugIntakeIntervalEnd: $drugIntakeIntervalEnd, firstDoseTime: $firstDoseTime, secondDoseTime: $secondDoseTime, orderOfDrugIntake: $orderOfDrugIntake)';
+    return 'Drug(name: $name, intakeForm: $intakeForm, reasonForDrug: $reasonForDrug, drugIntakeFrequency: $drugIntakeFrequency, drugIntakeIntervalStart: $drugIntakeIntervalStart, drugIntakeIntervalEnd: $drugIntakeIntervalEnd, doseTimeAndCount: $doseTimeAndCount, orderOfDrugIntake: $orderOfDrugIntake)';
   }
 
   @override
@@ -117,8 +173,7 @@ class Drug {
         other.drugIntakeFrequency == drugIntakeFrequency &&
         other.drugIntakeIntervalStart == drugIntakeIntervalStart &&
         other.drugIntakeIntervalEnd == drugIntakeIntervalEnd &&
-        other.firstDoseTime == firstDoseTime &&
-        other.secondDoseTime == secondDoseTime &&
+        listEquals(other.doseTimeAndCount, doseTimeAndCount) &&
         other.orderOfDrugIntake == orderOfDrugIntake;
   }
 
@@ -130,8 +185,52 @@ class Drug {
         drugIntakeFrequency.hashCode ^
         drugIntakeIntervalStart.hashCode ^
         drugIntakeIntervalEnd.hashCode ^
-        firstDoseTime.hashCode ^
-        secondDoseTime.hashCode ^
+        doseTimeAndCount.hashCode ^
         orderOfDrugIntake.hashCode;
   }
+}
+
+int compareDrugs(Drug a, Drug b) {
+  // Get the current date and time
+  final now = DateTime.now();
+
+  // Calculate the scores for each drug based on proximity to current date and time
+  final scoreA = _calculateScore(a, now);
+  final scoreB = _calculateScore(b, now);
+
+  // Compare the scores
+  return scoreA.compareTo(scoreB);
+}
+
+int _calculateScore(Drug drug, DateTime now) {
+  // Calculate the score based on drugIntakeIntervalStart, drugIntakeIntervalEnd,
+  // and the time difference between the doseTimeAndCount and the current time.
+
+  var score = 0;
+
+  // If drugIntakeIntervalStart is available, calculate the difference in days
+  if (drug.drugIntakeIntervalStart != null) {
+    final daysDifference = now.difference(drug.drugIntakeIntervalStart!).inDays;
+    score += min(0, daysDifference); // Negative score for past dates
+  }
+
+  // If drugIntakeIntervalEnd is available, calculate the difference in days
+  if (drug.drugIntakeIntervalEnd != null) {
+    final daysDifference = now.difference(drug.drugIntakeIntervalEnd!).inDays;
+    score += min(0, daysDifference); // Negative score for past dates
+  }
+
+  // Calculate the difference in minutes between each doseTimeAndCount and the current time
+  for (var dosage in drug.doseTimeAndCount) {
+    final minutesDifference = now
+        .difference(_combineDateAndTime(now, dosage.dosageTimeToBeTaken))
+        .inMinutes;
+    score += min(0, minutesDifference); // Negative score for past times
+  }
+
+  return score;
+}
+
+DateTime _combineDateAndTime(DateTime date, TimeOfDay time) {
+  return DateTime(date.year, date.month, date.day, time.hour, time.minute);
 }

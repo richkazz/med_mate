@@ -75,19 +75,13 @@ class _TimePickerContentPickerContentState
           ),
           const SizedBox(height: AppSpacing.lg),
           Text(
-            _selectedTime.isNull ? '' : _formatTime(_selectedTime!),
+            _selectedTime.isNull ? '' : _selectedTime!.formatTime,
             style: const TextStyle(fontSize: 16),
           ),
+          const SizedBox(height: AppSpacing.xxxlg),
         ],
       ),
     );
-  }
-
-  String _formatTime(TimeOfDay time) {
-    final formattedHour = time.hourOfPeriod.toString().padLeft(2, '0');
-    final formattedMinute = time.minute.toString().padLeft(2, '0');
-    final period = time.period == DayPeriod.am ? 'AM' : 'PM';
-    return '$formattedHour:$formattedMinute $period';
   }
 }
 
@@ -120,8 +114,15 @@ class _DosageAmountInputState extends State<DosageAmountInput> {
           keyboardType: TextInputType.number,
           textAlign: TextAlign.center,
           onChanged: (value) {
+            if (value.isEmpty) {
+              return;
+            }
             if (int.tryParse(value).isNull) {
               _controller.text = previousValue;
+              return;
+            }
+
+            if (int.tryParse(value)! == 0) {
               return;
             }
             previousValue = value;

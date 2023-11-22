@@ -1,9 +1,14 @@
 import 'dart:math';
-
+import 'package:domain/domain.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:med_mate/add_med/add_med.dart';
 import 'package:med_mate/l10n/l10n.dart';
+import 'package:med_mate/landing_page/cubit/landing_page_cubit.dart';
+import 'package:med_mate/landing_page/widget/widgets.dart';
+import 'package:med_mate/widgets/widget.dart';
 
 class LandingPage extends StatelessWidget {
   const LandingPage({super.key});
@@ -11,95 +16,45 @@ class LandingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final l10n = context.l10n;
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          ContentTitle(theme: theme),
-          const Divider(),
-          const DateSelector(),
-          Assets.images.landingPageToDoIcon.image(package: 'app_ui'),
-          const SizedBox(
-            height: AppSpacing.md,
+    final drugs = context
+        .select<LandingPageCubit, List<Drug>>((value) => value.state.drugs);
+    return Scaffold(
+      appBar: AppBar(
+        leading: const Padding(
+          padding: EdgeInsets.only(left: AppSpacing.sm),
+          child: CircleAvatar(
+            radius: 25,
+            backgroundColor: AppColors.outlineLight,
           ),
-          Text(
-            l10n.trackMedicationSchedule,
-            textAlign: TextAlign.center,
-            style: theme.textTheme.titleLarge!.copyWith(
-              fontWeight: FontWeight.bold,
+        ),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Michael',
+              style: Theme.of(context).textTheme.titleMedium,
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 230),
-              child: Text(
-                l10n.medsTakenInstruction,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.labelSmall!.copyWith(
-                  color: AppColors.textDullColor,
-                  fontWeight: FontWeight.w500,
-                ),
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(
+                Icons.keyboard_arrow_down_sharp,
+                size: 15,
               ),
             ),
-          ),
-          AddMedicationButton(l10n: l10n),
-          const SizedBox(
-            height: AppSpacing.lg,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class ContentTitle extends StatelessWidget {
-  const ContentTitle({
-    required this.theme,
-    super.key,
-  });
-
-  final ThemeData theme;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 60,
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
+          ],
+        ),
+        actions: [
+          Expanded(
+            child: Row(
               mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                const CircleAvatar(
-                  radius: 25,
-                  backgroundColor: AppColors.outlineLight,
-                ),
-                const SizedBox(
-                  width: AppSpacing.sm,
-                ),
-                Text(
-                  'Michael',
-                  style: theme.textTheme.titleMedium,
-                ),
+                const Text('Nov'),
                 IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.keyboard_arrow_down_sharp,
-                    size: 15,
-                  ),
-                ),
-              ],
-            ),
-            Expanded(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  const Text('Nov'),
-                  Assets.icons.calendar03.svg(
+                  onPressed: () {
+                    context.read<LandingPageCubit>().showCalenderToSelect();
+                  },
+                  icon: Assets.icons.calendar03.svg(
                     height: 20,
                     width: 20,
                     package: 'app_ui',
@@ -108,12 +63,37 @@ class ContentTitle extends StatelessWidget {
                       BlendMode.srcIn,
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            IconButton(
-              onPressed: () {},
-              icon: Assets.icons.notification02.svg(package: 'app_ui'),
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: Assets.icons.notification02.svg(package: 'app_ui'),
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const Divider(
+              color: AppColors.dividerColor,
+            ),
+            const DateSelector(),
+            if (drugs.isEmpty)
+              const NoMedicationAvailable(
+                key: ValueKey('NoMedicationAvailable'),
+              )
+            else
+              const MedicationAvailable(
+                key: ValueKey('MedicationAvailable'),
+              ),
+            const SizedBox(
+              height: AppSpacing.md,
+            ),
+            AddMedicationButton(l10n: context.l10n),
+            const SizedBox(
+              height: AppSpacing.lg,
             ),
           ],
         ),
@@ -122,37 +102,128 @@ class ContentTitle extends StatelessWidget {
   }
 }
 
-class AddMedicationButton extends StatelessWidget {
-  const AddMedicationButton({
-    required this.l10n,
-    super.key,
-  });
-
-  final AppLocalizations l10n;
+class MedicationAvailable extends StatelessWidget {
+  const MedicationAvailable({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.md,
-        0,
-        AppSpacing.md,
-        AppSpacing.md,
-      ),
+    final theme = Theme.of(context);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SizedBox(
+          height: 30,
+        ),
+        const MedicationAvailableSectionOne(),
+        const SizedBox(
+          height: 60,
+        ),
+        Wrap(
+          spacing: AppSpacing.lg,
+          runSpacing: AppSpacing.md,
+          children: [
+            ...context.read<LandingPageCubit>().state.sortedDrugs.map(
+                  (e) => DrugDetailInherited(
+                    drug: e,
+                    child: DrugDetailItem(theme: theme),
+                  ),
+                ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class DrugDetailInherited extends InheritedWidget {
+  const DrugDetailInherited({
+    required super.child,
+    required this.drug,
+    super.key,
+  });
+  final Drug drug;
+  static DrugDetailInherited? maybeOf(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<DrugDetailInherited>();
+  }
+
+  static DrugDetailInherited of(BuildContext context) {
+    final result = maybeOf(context);
+    assert(result != null, 'No DrugDetailInherited found in context');
+    return result!;
+  }
+
+  @override
+  bool updateShouldNotify(covariant InheritedWidget oldWidget) {
+    return false;
+  }
+}
+
+class DrugDetailItem extends StatelessWidget {
+  const DrugDetailItem({
+    super.key,
+    required this.theme,
+  });
+
+  final ThemeData theme;
+
+  @override
+  Widget build(BuildContext context) {
+    final drug = DrugDetailInherited.of(context).drug;
+    return DecoratedBoxWithPrimaryBorder(
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 250, maxHeight: 40),
-        child: AppButton.primary(
-          onPressed: () => Navigator.push(context, AddMedication.route()),
-          borderRadius: 30,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+        constraints: const BoxConstraints(minWidth: 90),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.lg,
+            AppSpacing.lg,
+            AppSpacing.lg,
+            AppSpacing.lg,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
-                Icons.add,
-              ),
-              Text(
-                l10n.addMedication,
-                textAlign: TextAlign.center,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Assets.icons.pill.svg(package: 'app_ui'),
+                      Text(
+                        drug.name,
+                        softWrap: true,
+                        style: theme.textTheme.bodyMedium!
+                            .copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        'Dose: ${drug.doseTimeAndCount.first.dosageCount}',
+                        style: theme.textTheme.bodySmall!
+                            .copyWith(fontWeight: FontWeight.w300),
+                      ),
+                      Text(
+                        drug.orderOfDrugIntake,
+                        style: theme.textTheme.bodySmall!.copyWith(
+                          fontWeight: FontWeight.w300,
+                          color: AppColors.textDullColor,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: AppSpacing.md,
+                      ),
+                      Text(
+                        drug.doseTimeAndCount.first.dosageTimeToBeTaken
+                            .formatTime,
+                        style: theme.textTheme.bodySmall!.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ],
           ),
@@ -162,130 +233,91 @@ class AddMedicationButton extends StatelessWidget {
   }
 }
 
-class WeekDayItem extends StatelessWidget {
-  const WeekDayItem({
-    required this.weekDayNumber,
-    required this.weekDayName,
-    required this.onPressed,
-    required this.isSelected,
+class MedicationAvailableSectionOne extends StatelessWidget {
+  const MedicationAvailableSectionOne({
     super.key,
   });
-  final int weekDayNumber;
-  final String weekDayName;
-  final VoidCallback onPressed;
-  final bool isSelected;
+
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          weekDayName,
-          style: theme.textTheme.bodySmall!.copyWith(
-            fontWeight: FontWeight.bold,
+    return CustomPaint(
+      painter: CirclePainter(
+        color: AppColors.bottomNavBarColor,
+        radius: 100,
+      ),
+      child: CustomPaint(
+        painter:
+            CirclePainter(color: AppColors.white, radius: 90, filled: true),
+        child: CustomPaint(
+          painter: CirclePainter(
+            color: AppColors.primaryColor,
+            radius: 86,
+            filled: true,
           ),
-        ),
-        IconButton(
-          onPressed: onPressed,
-          icon: CircleAvatar(
-            radius: 21,
-            backgroundColor: AppColors.textFieldFillColor,
-            child: CircleAvatar(
-              radius: 18,
-              backgroundColor: isSelected
-                  ? AppColors.primaryColor
-                  : AppColors.textFieldFillColor,
-              child: CircleAvatar(
-                radius: 17,
-                backgroundColor: AppColors.textFieldFillColor,
-                child: Center(
+          child: Column(
+            children: [
+              Text(
+                'Next dose in',
+                style: ContentTextStyle.bodyText2.copyWith(
+                  color: AppColors.white,
+                ),
+              ),
+              const SizedBox(
+                height: AppSpacing.sm,
+              ),
+              Text(
+                '3 hours',
+                style: ContentTextStyle.headline5.copyWith(
+                  color: AppColors.white,
+                ),
+              ),
+              const SizedBox(
+                height: AppSpacing.md,
+              ),
+              SizedBox(
+                width: 90,
+                height: 35,
+                child: AppButton.primaryFilledWhite(
+                  borderRadius: 25,
                   child: Text(
-                    '$weekDayNumber',
-                    style: theme.textTheme.bodySmall!.copyWith(
+                    'Take now',
+                    style: ContentTextStyle.labelSmall.copyWith(
+                      color: AppColors.primaryColor,
                       fontWeight: FontWeight.bold,
-                      color: const Color.fromRGBO(173, 173, 173, 1),
                     ),
                   ),
                 ),
               ),
-            ),
+            ],
           ),
         ),
-      ],
-    );
-  }
-}
-
-class DateSelector extends StatefulWidget {
-  const DateSelector({super.key});
-
-  @override
-  State<DateSelector> createState() => _DateSelectorState();
-}
-
-class _DateSelectorState extends State<DateSelector> {
-  late PageController _pageController;
-  late DateTime _selectedDate;
-  late DateTime _today;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedDate = DateTime.now();
-    _today = DateTime.now();
-
-    // Set initial page to today's date
-    _pageController = PageController(
-      initialPage:
-          max(_today.day - 1, 8), // Ensure at least 8 pages are visible
-      viewportFraction: 0.2, // Adjust the fraction of the viewport
-    );
-  }
-
-//  IconButton(
-//             icon: const Icon(Icons.calendar_today),
-//             onPressed: () => _showDatePicker(context),
-//           ),
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 80,
-      child: PageView.builder(
-        controller: _pageController,
-        itemBuilder: (context, index) {
-          final day = index + 1;
-          return _buildDayCircle(day);
-        },
       ),
     );
   }
+}
 
-  Widget _buildDayCircle(int day) {
-    final isToday = day == _today.day;
+class CirclePainter extends CustomPainter {
+  CirclePainter({
+    required this.radius,
+    required this.color,
+    this.filled = false,
+  });
+  final double radius;
+  final bool filled;
+  final Color color;
 
-    return WeekDayItem(
-      isSelected: isToday,
-      onPressed: () {},
-      weekDayName: 'Mon',
-      weekDayNumber: day,
-    );
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = filled ? PaintingStyle.fill : PaintingStyle.stroke
+      ..strokeWidth = filled ? 0 : 4.0;
+
+    canvas.drawCircle(Offset(size.width / 2, size.height / 2), radius, paint);
   }
 
-  Future<void> _showDatePicker(BuildContext context) async {
-    final pickedDate = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
-    );
-
-    if (pickedDate != null && pickedDate != _selectedDate) {
-      setState(() {
-        _selectedDate = pickedDate;
-        // Scroll to the selected date
-        _pageController.jumpToPage(max(_selectedDate.day - 1, 8));
-      });
-    }
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return false;
   }
 }

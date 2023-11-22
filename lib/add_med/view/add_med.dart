@@ -56,12 +56,13 @@ class DrugNameForm extends StatelessWidget {
         title: l10n.addMedicationQuestion,
         subTitle: l10n.enterMedication,
         stepNumber: 1,
-        stepTotalCount: 6,
+        stepTotalCount: 7,
         onNextClicked: (value) {
           Navigator.of(context).push(
             SlidePageRoute<DrugAdministrationMethodForm>(
               page: DrugAdministrationMethodForm(
-                drug: drug.copyWith(name: value as String),
+                drug:
+                    drug.copyWith(name: value as String, doseTimeAndCount: []),
               ),
             ),
           );
@@ -107,7 +108,7 @@ class DrugIntakeFrequencyForm extends StatelessWidget {
         title: l10n.medicationFrequencyQuestion,
         subTitle: l10n.enterMedicationFrequency,
         stepNumber: 4,
-        stepTotalCount: 6,
+        stepTotalCount: 7,
         onNextClicked: (value) {
           Navigator.of(context).push(
             SlidePageRoute<DrugIntakeIntervalForm>(
@@ -119,22 +120,18 @@ class DrugIntakeFrequencyForm extends StatelessWidget {
         },
         icon: Assets.icons.calendar03.svg(package: 'app_ui'),
         formList: UIConstants.drugIntakeIntervals,
-        initialValue: drug.orderOfDrugIntake,
+        initialValue: drug.drugIntakeFrequency,
         child: const AddMedicationSteps(),
       ),
     );
   }
 }
 
-//6
-class DrugDoseTimeForm extends StatelessWidget {
-  const DrugDoseTimeForm(
-      {required this.drug, required this.doseNumber, super.key});
+//7
+class DrugIntakeOrderForm extends StatelessWidget {
+  const DrugIntakeOrderForm({required this.drug, super.key});
 
   final Drug drug;
-
-  /// the number that determine if this is the first or second or third drug
-  final int doseNumber;
   Future<void> _showDialog(BuildContext context) async {
     await showDialog<void>(
       context: context,
@@ -150,6 +147,60 @@ class DrugDoseTimeForm extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return BlocProvider(
+      create: (context) => AddMedicationCubit()
+        ..onOpened(
+          UIConstants.drugIntakeOrder,
+          initialValue: drug.orderOfDrugIntake,
+          addMedicationFormType: AddMedicationFormType.selectOne,
+        ),
+      child: AddMedicationInheritedWidget(
+        drug: drug,
+        selectedDrugName: drug.name,
+        isSearchTextFieldVisible: false,
+        onAppBarBackButtonPressed: () {
+          Navigator.pop(context);
+        },
+        onPreviousButtonPressed: () {
+          Navigator.pop(context);
+        },
+        title: l10n.almostDone,
+        subTitle: l10n.takeMedicationInstruction,
+        stepNumber: 7,
+        stepTotalCount: 7,
+        onNextClicked: (value) {
+          context.read<LandingPageCubit>().saveNewDrugAdded(
+                drug.copyWith(orderOfDrugIntake: value as String),
+              );
+
+          _showDialog(context);
+          Navigator.popUntil(context, (route) => route.isFirst);
+        },
+        icon: Assets.icons.calendar03.svg(package: 'app_ui'),
+        formList: UIConstants.drugIntakeIntervals,
+        initialValue: drug.drugIntakeFrequency,
+        child: const AddMedicationSteps(),
+      ),
+    );
+  }
+}
+
+//6
+class DrugDoseTimeForm extends StatelessWidget {
+  const DrugDoseTimeForm({
+    required this.drug,
+    required this.doseNumber,
+    super.key,
+  });
+
+  final Drug drug;
+
+  /// the number that determine if this is the first or second or third drug
+  final int doseNumber;
 
   @override
   Widget build(BuildContext context) {
@@ -178,25 +229,26 @@ class DrugDoseTimeForm extends StatelessWidget {
         stepNumber: 6,
         stepTotalCount: 7,
         onNextClicked: (value) {
-          var drugResult = drug;
+          final drugResult = drug;
           final result = value as (TimeOfDay, int);
-          if (doseNumber == 1) {
-            drugResult = drugResult.copyWith(
-              firstDoseTime:
-                  DateTime(1999, 1, 1, result.$1.hour, result.$1.minute),
-            );
-          } else if (doseNumber == 2) {
-            drugResult = drugResult.copyWith(
-              secondDoseTime:
-                  DateTime(1999, 1, 1, result.$1.hour, result.$1.minute),
-            );
-          }
+          drugResult.doseTimeAndCount.add(
+            DosageTimeAndCount(
+              dosageTimeToBeTaken: result.$1,
+              dosageCount: result.$2,
+            ),
+          );
           if (doseNumber == 2) {
-            context.read<LandingPageCubit>().saveNewDrugAdded(drugResult);
-            _showDialog(context);
-            Navigator.popUntil(context, (route) => route.isFirst);
+            Navigator.of(context).push(
+              SlidePageRoute<DrugIntakeOrderForm>(
+                page: DrugIntakeOrderForm(
+                  key: ValueKey<int>(doseNumber),
+                  drug: drugResult,
+                ),
+              ),
+            );
             return;
           }
+
           Navigator.of(context).push(
             SlidePageRoute<DrugDoseTimeForm>(
               page: DrugDoseTimeForm(
@@ -209,7 +261,7 @@ class DrugDoseTimeForm extends StatelessWidget {
         },
         icon: Assets.icons.alarmClock.svg(package: 'app_ui'),
         formList: UIConstants.drugIntakeIntervals,
-        initialValue: drug.orderOfDrugIntake,
+        initialValue: drug.drugIntakeFrequency,
         child: const AddMedicationSteps(),
       ),
     );
@@ -250,7 +302,7 @@ class DrugIntakeIntervalForm extends StatelessWidget {
         subTitle: 'Enter the duration you are to take the medication for'
             ' as specified my the professional',
         stepNumber: 5,
-        stepTotalCount: 6,
+        stepTotalCount: 7,
         onNextClicked: (value) {
           Navigator.of(context).push(
             SlidePageRoute<DrugDoseTimeForm>(
@@ -305,7 +357,7 @@ class DrugAdministrationMethodForm extends StatelessWidget {
         title: l10n.medicationFormQuestion,
         subTitle: l10n.enterMedicationForm,
         stepNumber: 2,
-        stepTotalCount: 6,
+        stepTotalCount: 7,
         onNextClicked: (value) {
           Navigator.of(context).push(
             SlidePageRoute<DrugReasonsForTakingDrugForm>(
@@ -357,7 +409,7 @@ class DrugReasonsForTakingDrugForm extends StatelessWidget {
         title: l10n.medicationPurposeQuestion,
         subTitle: l10n.enterMedicalCondition,
         stepNumber: 3,
-        stepTotalCount: 6,
+        stepTotalCount: 7,
         onNextClicked: (value) {
           Navigator.of(context).push(
             SlidePageRoute<DrugIntakeFrequencyForm>(
@@ -453,11 +505,13 @@ class CustomDialog extends StatelessWidget {
                   child: AppButton.primary(
                     borderRadius: 5,
                     onPressed: onPositivePressed,
-                    child: Text('Add another',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall!
-                            .copyWith(color: AppColors.white)),
+                    child: Text(
+                      'Add another',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall!
+                          .copyWith(color: AppColors.white),
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -466,11 +520,13 @@ class CustomDialog extends StatelessWidget {
                   child: AppButton.primaryOutlined(
                     borderRadius: 5,
                     onPressed: onNegativePressed,
-                    child: Text("That's all",
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall!
-                            .copyWith(color: AppColors.primaryColor)),
+                    child: Text(
+                      "That's all",
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall!
+                          .copyWith(color: AppColors.primaryColor),
+                    ),
                   ),
                 ),
               ],

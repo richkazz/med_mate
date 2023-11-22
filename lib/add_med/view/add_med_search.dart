@@ -29,11 +29,7 @@ class SectionTwo extends StatelessWidget {
 
     return ConstrainedBox(
       constraints: const BoxConstraints(minHeight: 150, maxHeight: 300),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          border: Border.all(color: AppColors.borderColor),
-          borderRadius: BorderRadius.circular(15),
-        ),
+      child: DecoratedBoxWithPrimaryBorder(
         child: Padding(
           padding: addMedicationFormType.isTimePicker
               ? EdgeInsets.zero
@@ -84,6 +80,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
     return SizedBox(
       width: MediaQuery.sizeOf(context).width,
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Align(
             alignment: Alignment.topRight,
@@ -208,30 +205,7 @@ class AddMedicationSteps extends StatelessWidget {
                   height: 1,
                   color: AppColors.dividerColor,
                 ),
-                const SizedBox(
-                  height: AppSpacing.md,
-                ),
-                if (addMedicationAttribute
-                    .selectedDrugName.isNotNullOrWhiteSpace)
-                  Text(
-                    addMedicationAttribute.selectedDrugName!,
-                    style: theme.textTheme.labelSmall
-                        ?.copyWith(color: AppColors.textDullColor),
-                  ),
-                const SizedBox(
-                  height: AppSpacing.md,
-                ),
-                IconWithRoundedBackground(
-                  color: AppColors.icon2BackgroundColor,
-                  icon: addMedicationAttribute.icon,
-                ),
-                const SizedBox(
-                  height: AppSpacing.lg,
-                ),
-                SectionOne(
-                  title: addMedicationAttribute.title,
-                  subTitle: addMedicationAttribute.subTitle,
-                ),
+                const FoldIfKeyboardVisible(),
                 const SectionTwo(),
                 const SizedBox(
                   height: AppSpacing.md,
@@ -252,11 +226,53 @@ class AddMedicationSteps extends StatelessWidget {
                     ),
                   ],
                 ),
+                const SizedBox(
+                  height: AppSpacing.lg,
+                ),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class FoldIfKeyboardVisible extends StatelessWidget {
+  const FoldIfKeyboardVisible({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final addMedicationAttribute = AddMedicationInheritedWidget.of(context);
+    final theme = Theme.of(context);
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SizedBox(
+          height: AppSpacing.md,
+        ),
+        if (addMedicationAttribute.selectedDrugName.isNotNullOrWhiteSpace)
+          Text(
+            addMedicationAttribute.selectedDrugName!,
+            style: theme.textTheme.labelSmall
+                ?.copyWith(color: AppColors.textDullColor),
+          ),
+        const SizedBox(
+          height: AppSpacing.md,
+        ),
+        IconWithRoundedBackground(
+          color: AppColors.icon2BackgroundColor,
+          icon: addMedicationAttribute.icon,
+        ),
+        const SizedBox(
+          height: AppSpacing.lg,
+        ),
+        SectionOne(
+          title: addMedicationAttribute.title,
+          subTitle: addMedicationAttribute.subTitle,
+        ),
+      ],
     );
   }
 }

@@ -272,6 +272,31 @@ class AppButton extends StatelessWidget {
           ),
         );
 
+  /// filled dark blue button
+  const AppButton.primaryFilledWhite({
+    required Widget child,
+    Key? key,
+    VoidCallback? onPressed,
+    double? elevation,
+    TextStyle? textStyle,
+    double? borderRadius,
+  }) : this._(
+          key: key,
+          onPressed: onPressed,
+          child: child,
+          borderRadius: borderRadius ?? 0,
+          buttonColor: AppColors.white,
+          elevation: elevation,
+          foregroundColor: AppColors.enabledButtonBackgroundColor,
+          disabledForegroundColor: AppColors.disabledButtonBackgroundColor,
+          disabledButtonColor: AppColors.white,
+          textStyle: textStyle,
+          padding: const EdgeInsets.only(
+            bottom: AppSpacing.xs,
+            top: AppSpacing.xs,
+          ),
+        );
+
   /// Filled transparent dark aqua button.
   const AppButton.transparentDarkAqua({
     required Widget child,
