@@ -26,10 +26,11 @@ class ReportView extends StatelessWidget {
         ),
         centerTitle: true,
         bottom: const PreferredSize(
-            preferredSize: Size.fromHeight(1),
-            child: Divider(
-              color: AppColors.dividerColor,
-            )),
+          preferredSize: Size.fromHeight(1),
+          child: Divider(
+            color: AppColors.dividerColor,
+          ),
+        ),
         actions: [
           IconButton(
             onPressed: () {},
@@ -108,22 +109,23 @@ class ReportModalBottomSheetContent extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(right: 5, top: 5),
                   child: InkWell(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: CustomPaint(
-                        painter: CirclePainter(
-                          filled: true,
-                          color: AppColors.textFieldFillColor,
-                          radius: 10,
-                          strokeWidth: 0,
-                        ),
-                        child: const Icon(
-                          Icons.close,
-                          size: 10,
-                        ),
-                      )),
-                )
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: CustomPaint(
+                      painter: CirclePainter(
+                        filled: true,
+                        color: AppColors.textFieldFillColor,
+                        radius: 10,
+                        strokeWidth: 0,
+                      ),
+                      child: const Icon(
+                        Icons.close,
+                        size: 10,
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
             const SizedBox(
