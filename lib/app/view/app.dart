@@ -4,29 +4,40 @@ import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:med_mate/app/app.dart';
+import 'package:med_mate/application/application.dart';
 import 'package:med_mate/l10n/l10n.dart';
 import 'package:med_mate/landing_page/cubit/landing_page_cubit.dart';
 
 class App extends StatelessWidget {
   const App({
     required User user,
+    required this.drugRepository,
     super.key,
   }) : _user = user;
 
   final User _user;
-
+  final DrugRepository drugRepository;
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
+    return MultiRepositoryProvider(
       providers: [
-        BlocProvider(
-          create: (_) => AppBloc(
-            user: _user,
-          )..add(const AppOpened()),
+        RepositoryProvider<DrugRepository>(
+          create: (context) => drugRepository,
         ),
-        BlocProvider(create: (_) => LandingPageCubit()),
       ],
-      child: const AppView(),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (_) => AppBloc(
+              user: _user,
+            )..add(const AppOpened()),
+          ),
+          BlocProvider(
+            create: (_) => LandingPageCubit(drugRepository),
+          ),
+        ],
+        child: const AppView(),
+      ),
     );
   }
 }

@@ -1,18 +1,19 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
-@immutable
+///A List of to test
+final globalTestDrugList = <Drug>[];
 
 /// Represents a specific dosage time and count for a drug.
 @immutable
-
-/// Represents a specific dosage time and count for a drug.
 class DosageTimeAndCount {
   /// Constructs a [DosageTimeAndCount] with the given parameters.
   const DosageTimeAndCount({
     required this.dosageTimeToBeTaken,
     required this.dosageCount,
+    this.drugToTakeDailyStatusRecord = const {},
   });
 
   /// Creates a [DosageTimeAndCount] from a map.
@@ -21,6 +22,19 @@ class DosageTimeAndCount {
       dosageTimeToBeTaken: TimeOfDay.now(),
       dosageCount: map['dosageCount'] as int,
     );
+  }
+
+  /// Gets the daily intake status of the drug for today.
+  DrugToTakeDailyStatus get drugToTakeDailyStatusRecordForToday =>
+      drugToTakeDailyStatusRecord[todayAsMicrosecondsSinceEpochWithOutTime] ??
+      DrugToTakeDailyStatus.waitingToBeTaken;
+
+  ///Today data as microsecondsSinceEpoch without the time factor
+  static int get todayAsMicrosecondsSinceEpochWithOutTime {
+    final today = DateTime.now();
+    return DateTime(today.year, today.month, today.day)
+        .toUtc()
+        .microsecondsSinceEpoch;
   }
 
   /// Creates a [DosageTimeAndCount] from a JSON string.
@@ -33,14 +47,20 @@ class DosageTimeAndCount {
   /// The count or quantity of the drug to be taken at the specified time.
   final int dosageCount;
 
+  /// Record of daily drug intake status.
+  final Map<int, DrugToTakeDailyStatus> drugToTakeDailyStatusRecord;
+
   /// Creates a copy of this [DosageTimeAndCount] with optional new values.
   DosageTimeAndCount copyWith({
     TimeOfDay? dosageTimeToBeTaken,
     int? dosageCount,
+    Map<int, DrugToTakeDailyStatus>? drugToTakeDailyStatusRecord,
   }) {
     return DosageTimeAndCount(
       dosageTimeToBeTaken: dosageTimeToBeTaken ?? this.dosageTimeToBeTaken,
       dosageCount: dosageCount ?? this.dosageCount,
+      drugToTakeDailyStatusRecord:
+          drugToTakeDailyStatusRecord ?? this.drugToTakeDailyStatusRecord,
     );
   }
 
@@ -57,7 +77,8 @@ class DosageTimeAndCount {
 
   @override
   String toString() =>
-      'DosageTimeAndCount(dosageTimeToBeTaken: $dosageTimeToBeTaken, dosageCount: $dosageCount)';
+      'DosageTimeAndCount(dosageTimeToBeTaken: $dosageTimeToBeTaken,'
+      ' dosageCount: $dosageCount)';
 
   @override
   bool operator ==(covariant DosageTimeAndCount other) {
@@ -106,7 +127,6 @@ class Drug {
     required this.drugIntakeFrequency,
     required this.doseTimeAndCount,
     required this.orderOfDrugIntake,
-    this.drugToTakeDailyStatusRecord = const {},
     DateTime? drugIntakeIntervalStart,
     DateTime? drugIntakeIntervalEnd,
   })  : drugIntakeIntervalStart = drugIntakeIntervalStart?.toUtc().toLocal(),
@@ -154,15 +174,13 @@ class Drug {
   /// The frequency at which the drug should be taken.
   final String drugIntakeFrequency;
 
-  /// The start date and time for the interval during which the drug should be taken.
+  /// The start date and time for the interval during which the
+  /// drug should be taken.
   final DateTime? drugIntakeIntervalStart;
 
   /// The end date and time for the interval during which the drug
   ///  should be taken.
   final DateTime? drugIntakeIntervalEnd;
-
-  /// Record of daily drug intake status.
-  final Map<int, DrugToTakeDailyStatus> drugToTakeDailyStatusRecord;
 
   /// List of dosage times and counts for the drug.
   final List<DosageTimeAndCount> doseTimeAndCount;
@@ -178,13 +196,10 @@ class Drug {
     String? drugIntakeFrequency,
     DateTime? drugIntakeIntervalStart,
     DateTime? drugIntakeIntervalEnd,
-    Map<int, DrugToTakeDailyStatus>? drugToTakeDailyStatusRecord,
     List<DosageTimeAndCount>? doseTimeAndCount,
     String? orderOfDrugIntake,
   }) {
     return Drug(
-      drugToTakeDailyStatusRecord:
-          drugToTakeDailyStatusRecord ?? this.drugToTakeDailyStatusRecord,
       name: name ?? this.name,
       intakeForm: intakeForm ?? this.intakeForm,
       reasonForDrug: reasonForDrug ?? this.reasonForDrug,
@@ -198,12 +213,7 @@ class Drug {
     );
   }
 
-  /// Gets the daily intake status of the drug for today.
-  DrugToTakeDailyStatus get drugToTakeDailyStatusRecordForToday =>
-      drugToTakeDailyStatusRecord[DateTime.now().day] ??
-      DrugToTakeDailyStatus.waitingToBeTaken;
-
-  /// Static instance representing an empty drug.
+  ///An empty drug
   static Drug empty = Drug(
     drugIntakeFrequency: '',
     drugIntakeIntervalEnd: DateTime.now(),
@@ -235,7 +245,7 @@ class Drug {
 
   @override
   String toString() {
-    return 'Drug(name: $name,drugToTakeDailyStatusRecord: $drugToTakeDailyStatusRecord intakeForm: $intakeForm,'
+    return 'Drug(name: $name, intakeForm: $intakeForm,'
         ' reasonForDrug: $reasonForDrug,'
         ' drugIntakeFrequency: $drugIntakeFrequency,'
         ' drugIntakeIntervalStart: $drugIntakeIntervalStart,'
@@ -256,8 +266,6 @@ class Drug {
         other.drugIntakeFrequency == drugIntakeFrequency &&
         other.drugIntakeIntervalStart == drugIntakeIntervalStart &&
         other.drugIntakeIntervalEnd == drugIntakeIntervalEnd &&
-        other.drugToTakeDailyStatusRecordForToday ==
-            drugToTakeDailyStatusRecordForToday &&
         other.orderOfDrugIntake == orderOfDrugIntake;
   }
 }
@@ -271,13 +279,15 @@ extension ListOfDrugsEx on List<Drug> {
     final todayDate = DateTime(today.year, today.month, today.day);
 
     // Filter drugs based on today's date
-    final drugsForToday = where((drug) =>
-        drug.drugIntakeIntervalStart != null &&
-        drug.drugIntakeIntervalEnd != null &&
-        (todayDate.isAfter(drug.drugIntakeIntervalStart!) ||
-            todayDate.isAtSameMomentAs(drug.drugIntakeIntervalStart!)) &&
-        (todayDate.isBefore(drug.drugIntakeIntervalEnd!) ||
-            todayDate.isAtSameMomentAs(drug.drugIntakeIntervalEnd!)));
+    final drugsForToday = where(
+      (drug) =>
+          drug.drugIntakeIntervalStart != null &&
+          drug.drugIntakeIntervalEnd != null &&
+          (todayDate.isAfter(drug.drugIntakeIntervalStart!) ||
+              todayDate.isAtSameMomentAs(drug.drugIntakeIntervalStart!)) &&
+          (todayDate.isBefore(drug.drugIntakeIntervalEnd!) ||
+              todayDate.isAtSameMomentAs(drug.drugIntakeIntervalEnd!)),
+    );
 
     return drugsForToday.toList();
   }

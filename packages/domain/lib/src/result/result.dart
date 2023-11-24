@@ -11,7 +11,7 @@ class ResultService {
     return Result<T>(data: data, isSuccessful: true, errorMessage: null);
   }
 
-  Result<T> errore<T extends Object>(String errorMessage) {
+  Result<T> error<T extends Object>(String errorMessage) {
     return Result<T>(isSuccessful: false, errorMessage: errorMessage);
   }
 }

@@ -229,12 +229,24 @@ class DrugDoseTimeForm extends StatelessWidget {
         onNextClicked: (value) {
           final drugResult = drug;
           final result = value as (TimeOfDay, int);
-          drugResult.doseTimeAndCount.add(
-            DosageTimeAndCount(
+
+          //Due to the possibility of navigating back to this page
+          //and the way list works, we need to check if a DosageTimeAndCount
+          //as been added for this particular [[doseNumber]
+          if (drugResult.doseTimeAndCount.length == doseNumber) {
+            drugResult.doseTimeAndCount[doseNumber - 1] = DosageTimeAndCount(
               dosageTimeToBeTaken: result.$1,
               dosageCount: result.$2,
-            ),
-          );
+            );
+          } else {
+            drugResult.doseTimeAndCount.add(
+              DosageTimeAndCount(
+                dosageTimeToBeTaken: result.$1,
+                dosageCount: result.$2,
+              ),
+            );
+          }
+
           if (doseNumber == 2) {
             Navigator.of(context).push(
               SlidePageRoute<DrugIntakeOrderForm>(

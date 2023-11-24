@@ -9,9 +9,11 @@ class DrugDetailInherited extends InheritedWidget {
   const DrugDetailInherited({
     required super.child,
     required this.drug,
+    required this.indexOfDrugDosageTime,
     super.key,
   });
   final Drug drug;
+  final int indexOfDrugDosageTime;
   static DrugDetailInherited? maybeOf(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<DrugDetailInherited>();
   }
@@ -41,20 +43,25 @@ class DrugDetailItem extends StatelessWidget {
     Future<void> showDialogForDrugDetailPopUp(
       BuildContext context,
       Drug drug,
+      int indexOfDosageTime,
     ) async {
       await showDialog<void>(
         context: context,
         builder: (ctx) => DrugDetailPopUp(
           theme: theme,
           drug: drug,
+          indexOfDosageTime: indexOfDosageTime,
           landingPageCubit: context.read<LandingPageCubit>(),
         ),
       );
     }
 
-    final drug = DrugDetailInherited.of(context).drug;
+    final drugDetailInherited = DrugDetailInherited.of(context);
+    final drug = drugDetailInherited.drug;
+    final indexOfDosageTime = drugDetailInherited.indexOfDrugDosageTime;
     final record = (
-      drug.drugToTakeDailyStatusRecordForToday,
+      drug.doseTimeAndCount[indexOfDosageTime]
+          .drugToTakeDailyStatusRecordForToday,
       drug.doseTimeAndCount.first.dosageTimeToBeTaken
     );
     return ConstrainedBox(
@@ -62,18 +69,17 @@ class DrugDetailItem extends StatelessWidget {
         minWidth: 90,
       ),
       child: InkWell(
-        onTap: () => showDialogForDrugDetailPopUp(context, drug),
+        onTap: () =>
+            showDialogForDrugDetailPopUp(context, drug, indexOfDosageTime),
         child: switch (record) {
           (DrugToTakeDailyStatus.taken, _) => DecoratedBoxWithSuccessBorder(
               child: DrugDetailItemContent(
-                drug: drug,
                 theme: theme,
                 reducePadding: 5,
               ),
             ),
           (DrugToTakeDailyStatus.missed, _) => DecoratedBoxWithFailureBorder(
               child: DrugDetailItemContent(
-                drug: drug,
                 theme: theme,
                 reducePadding: 5,
               ),
@@ -82,7 +88,6 @@ class DrugDetailItem extends StatelessWidget {
               padding: const EdgeInsets.only(right: 5, top: 5),
               child: DecoratedBoxWithPrimaryBorder(
                 child: DrugDetailItemContent(
-                  drug: drug,
                   theme: theme,
                   reducePadding: 5,
                 ),
@@ -90,7 +95,6 @@ class DrugDetailItem extends StatelessWidget {
             ),
           (DrugToTakeDailyStatus.skipped, _) => DecoratedBoxWithSkippedBorder(
               child: DrugDetailItemContent(
-                drug: drug,
                 theme: theme,
                 reducePadding: 5,
               ),
@@ -103,20 +107,22 @@ class DrugDetailItem extends StatelessWidget {
 
 class DrugDetailItemContent extends StatelessWidget {
   const DrugDetailItemContent({
-    required this.drug,
     required this.theme,
     required this.reducePadding,
     super.key,
   });
 
-  final Drug drug;
   final ThemeData theme;
   final double reducePadding;
 
   @override
   Widget build(BuildContext context) {
-    final (status, statusColor) =
-        switch (drug.drugToTakeDailyStatusRecordForToday) {
+    final drugDetailInherited = DrugDetailInherited.of(context);
+    final drug = drugDetailInherited.drug;
+    final indexOfDosageTime = drugDetailInherited.indexOfDrugDosageTime;
+    final (status, statusColor) = switch (drug
+        .doseTimeAndCount[indexOfDosageTime]
+        .drugToTakeDailyStatusRecordForToday) {
       (DrugToTakeDailyStatus.taken) => ('Taken', AppColors.green),
       (DrugToTakeDailyStatus.missed) => ('Missed', AppColors.red),
       (DrugToTakeDailyStatus.skipped) => ('Skipped', AppColors.orange),
@@ -216,14 +222,20 @@ class DrugDetailPopUp extends StatelessWidget {
     required this.theme,
     required this.drug,
     required this.landingPageCubit,
+    required this.indexOfDosageTime,
     super.key,
   });
   final LandingPageCubit landingPageCubit;
   final ThemeData theme;
   final Drug drug;
+  final int indexOfDosageTime;
   @override
   Widget build(BuildContext context) {
-    final detailController = DrugDetailController(context: context);
+    final detailController = DrugDetailController(
+      context: context,
+      drug: drug,
+      indexOfDosageTime: indexOfDosageTime,
+    );
     return Dialog(
       backgroundColor: AppColors.white,
       surfaceTintColor: AppColors.white,
@@ -340,13 +352,11 @@ class DrugDetailPopUp extends StatelessWidget {
               final isRescheduleButtonClicked = value == 2;
               if (isSkipButtonClicked) {
                 detailController.onSkippedButtonClicked(
-                  drug,
                   landingPageCubit,
                   theme,
                 );
               } else if (isDoneButtonClicked) {
                 detailController.onDoneButtonClicked(
-                  drug,
                   landingPageCubit,
                   theme,
                 );
@@ -363,11 +373,15 @@ class DrugDetailPopUp extends StatelessWidget {
 }
 
 class DrugDetailController {
-  DrugDetailController({required this.context});
-
+  DrugDetailController({
+    required this.context,
+    required this.drug,
+    required this.indexOfDosageTime,
+  });
+  final Drug drug;
+  final int indexOfDosageTime;
   final BuildContext context;
   Future<void> onSkippedButtonClicked(
-    Drug drug,
     LandingPageCubit landingPageCubit,
     ThemeData theme,
   ) async {
@@ -379,6 +393,7 @@ class DrugDetailController {
         landingPageCubit.changeDrugStatusForToday(
           drug,
           DrugToTakeDailyStatus.skipped,
+          indexOfDosageTime,
         );
       },
       actionStatement: 'You are about to skip'
@@ -392,7 +407,6 @@ class DrugDetailController {
   }
 
   Future<void> onDoneButtonClicked(
-    Drug drug,
     LandingPageCubit landingPageCubit,
     ThemeData theme,
   ) async {
@@ -407,6 +421,7 @@ class DrugDetailController {
         landingPageCubit.changeDrugStatusForToday(
           drug,
           DrugToTakeDailyStatus.taken,
+          indexOfDosageTime,
         );
       },
       icon: IconWithRoundedBackground(

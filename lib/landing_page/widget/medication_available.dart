@@ -32,9 +32,17 @@ class MedicationAvailable extends StatelessWidget {
                 runSpacing: AppSpacing.md,
                 children: [
                   ...context.read<LandingPageCubit>().state.drugs.map(
-                        (e) => DrugDetailInherited(
-                          drug: e,
-                          child: DrugDetailItem(theme: theme),
+                        (drug) => Wrap(
+                          spacing: AppSpacing.md,
+                          runSpacing: AppSpacing.md,
+                          children: List.generate(
+                            drug.doseTimeAndCount.length,
+                            (index) => DrugDetailInherited(
+                              drug: drug,
+                              indexOfDrugDosageTime: index,
+                              child: DrugDetailItem(theme: theme),
+                            ),
+                          ),
                         ),
                       ),
                 ],

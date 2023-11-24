@@ -4,8 +4,9 @@ import 'package:med_mate/bootstrap.dart';
 
 void main() {
   bootstrap(
-    () => const App(
+    (drugRepository) => App(
       user: User.anonymous,
+      drugRepository: drugRepository,
     ),
   );
 }

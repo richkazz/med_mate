@@ -1,6 +1,8 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:med_mate/l10n/l10n.dart';
+import 'package:med_mate/report/report.dart';
 import 'package:med_mate/widgets/widget.dart';
 
 class ReportPage extends StatelessWidget {
@@ -52,21 +54,33 @@ class ReportView extends StatelessWidget {
                 alignment: Alignment.topRight,
                 child: AppButton.smallTransparentWithDullBorder(
                   onPressed: () async {
-                    await showModalBottomSheet<void>(
-                      backgroundColor: AppColors.white,
-                      elevation: 0,
-                      context: context,
-                      builder: (context) {
-                        return const ReportModalBottomSheetContent();
-                      },
+                    await _showModalBottomSheetForReport(
+                      context,
+                      context.read<ReportCubit>(),
                     );
                   },
-                  child: Text(
-                    l10n.thisMonth,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall!
-                        .copyWith(fontWeight: FontWeight.w500),
+                  child: BlocBuilder<ReportCubit, ReportState>(
+                    buildWhen: (previous, current) {
+                      return current
+                              .reportEnum.isReportForChooseASpecificTime ||
+                          current.reportEnum.isReportForLastMonth ||
+                          current.reportEnum.isReportForThisMonth;
+                    },
+                    builder: (context, state) {
+                      final text = switch (state.reportEnum) {
+                        ReportEnum.reportForThisMonth => l10n.thisMonth,
+                        ReportEnum.reportForLastMonth => l10n.lastMonth,
+                        ReportEnum.reportForChooseASpecificTime => 'Custom',
+                        _ => l10n.thisMonth
+                      };
+                      return Text(
+                        text,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall!
+                            .copyWith(fontWeight: FontWeight.w500),
+                      );
+                    },
                   ),
                 ),
               ),
@@ -79,11 +93,28 @@ class ReportView extends StatelessWidget {
   }
 }
 
+Future<void> _showModalBottomSheetForReport(
+  BuildContext context,
+  ReportCubit reportCubit,
+) async {
+  await showModalBottomSheet<void>(
+    backgroundColor: AppColors.white,
+    elevation: 0,
+    context: context,
+    builder: (context) {
+      return ReportModalBottomSheetContent(
+        reportCubit: reportCubit,
+      );
+    },
+  );
+}
+
 class ReportModalBottomSheetContent extends StatelessWidget {
   const ReportModalBottomSheetContent({
+    required this.reportCubit,
     super.key,
   });
-
+  final ReportCubit reportCubit;
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -132,7 +163,10 @@ class ReportModalBottomSheetContent extends StatelessWidget {
               height: AppSpacing.md,
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                reportCubit.showReport(ReportEnum.reportForThisMonth);
+                Navigator.pop(context);
+              },
               child: Text(
                 context.l10n.thisMonth,
                 style: Theme.of(context).textTheme.labelSmall!.copyWith(
@@ -148,7 +182,10 @@ class ReportModalBottomSheetContent extends StatelessWidget {
               height: AppSpacing.xs,
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                reportCubit.showReport(ReportEnum.reportForLastMonth);
+                Navigator.pop(context);
+              },
               child: Text(
                 context.l10n.lastMonth,
                 style: Theme.of(context).textTheme.labelSmall!.copyWith(
@@ -167,7 +204,11 @@ class ReportModalBottomSheetContent extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pop(context);
+                    reportCubit
+                        .showReport(ReportEnum.reportForChooseASpecificTime);
+                  },
                   child: Text(
                     context.l10n.chooseSpecificTime,
                     style: Theme.of(context).textTheme.labelSmall!.copyWith(
