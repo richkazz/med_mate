@@ -108,7 +108,9 @@ class ReportModalBottomSheetContent extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(right: 5, top: 5),
                   child: InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
                       child: CustomPaint(
                         painter: CirclePainter(
                           filled: true,
