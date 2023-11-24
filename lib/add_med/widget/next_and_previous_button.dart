@@ -22,16 +22,17 @@ class NextButton extends StatelessWidget {
       height: 40,
       child: BlocBuilder<AddMedicationCubit, SearchTextFieldState>(
         builder: (context, state) {
-          Drug onDateTimeRangeSubmit() {
-            return addMed.drug.copyWith(
-              drugIntakeIntervalStart: state.dateTimeRangeResult.start,
-              drugIntakeIntervalEnd: state.dateTimeRangeResult.end,
-            );
-          }
-
           return AppButton.primary(
             onPressed: state.isItemSelected
                 ? () {
+                    Drug onDateTimeRangeSubmit() {
+                      return addMed.drug.copyWith(
+                        drugIntakeIntervalStart:
+                            state.dateTimeRangeResult.start,
+                        drugIntakeIntervalEnd: state.dateTimeRangeResult.end,
+                      );
+                    }
+
                     final formResult = switch (state.addMedicationFormType) {
                       AddMedicationFormType.search => state.selectedSearchValue,
                       AddMedicationFormType.selectOne =>

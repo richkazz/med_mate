@@ -26,7 +26,6 @@ class AppButton extends StatelessWidget {
         _disabledButtonColor = disabledButtonColor ?? AppColors.disabledButton,
         _borderSide = borderSide,
         _borderRadius = borderRadius,
-        _isLoadingShimmer = isLoadingShimmer ?? false,
         _foregroundColor = foregroundColor ?? AppColors.black,
         _disabledForegroundColor =
             disabledForegroundColor ?? AppColors.disabledForeground,
@@ -610,9 +609,6 @@ class AppButton extends StatelessWidget {
 
   /// A border of the button.
   final BorderSide? _borderSide;
-
-  /// To enable a loading shimmer of the button.
-  final bool _isLoadingShimmer;
 
   /// Elevation of the button.
   final double _elevation;

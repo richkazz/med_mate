@@ -61,7 +61,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
       setState(() {
         _startDate = dateRange.start;
         _endDate = dateRange.end;
-        context.read<AddMedicationCubit>().onDateTimeSelected();
+        context.read<AddMedicationCubit>().onDateTimeSelected(dateRange);
       });
     }
   }

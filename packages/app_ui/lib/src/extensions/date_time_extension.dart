@@ -11,9 +11,14 @@ extension DateTimeEx on DateTime {
 
 extension TimeOfDayEx on TimeOfDay {
   String get formatTime {
-    final formattedHour = this.hourOfPeriod.toString().padLeft(2, '0');
-    final formattedMinute = this.minute.toString().padLeft(2, '0');
+    final formattedHour = hourOfPeriod.toString().padLeft(2, '0');
+    final formattedMinute = minute.toString().padLeft(2, '0');
     final period = this.period == DayPeriod.am ? 'AM' : 'PM';
     return '$formattedHour:$formattedMinute $period';
+  }
+
+  DateTime get combineDateAndTime {
+    final date = DateTime.now();
+    return DateTime(date.year, date.month, date.day, hour, minute);
   }
 }

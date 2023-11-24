@@ -1,8 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
-import 'dart:math';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 @immutable
@@ -59,6 +57,17 @@ class DosageTimeAndCount {
   int get hashCode => dosageTimeToBeTaken.hashCode ^ dosageCount.hashCode;
 }
 
+enum DrugToTakeDailyStatus {
+  waitingToBeTaken,
+  taken,
+  missed,
+  skipped;
+
+  bool get isTaken => DrugToTakeDailyStatus.taken == this;
+  bool get isSkipped => DrugToTakeDailyStatus.skipped == this;
+  bool get isWaitingToBeTaken => DrugToTakeDailyStatus.waitingToBeTaken == this;
+}
+
 @immutable
 class Drug {
   final String name;
@@ -67,6 +76,9 @@ class Drug {
   final String drugIntakeFrequency;
   final DateTime? drugIntakeIntervalStart;
   final DateTime? drugIntakeIntervalEnd;
+
+  ///
+  final Map<int, DrugToTakeDailyStatus> drugToTakeDailyStatusRecord;
   final List<DosageTimeAndCount> doseTimeAndCount;
 
   ///Can be before or after eating or something related
@@ -78,9 +90,11 @@ class Drug {
     required this.drugIntakeFrequency,
     required this.doseTimeAndCount,
     required this.orderOfDrugIntake,
-    this.drugIntakeIntervalStart,
-    this.drugIntakeIntervalEnd,
-  });
+    this.drugToTakeDailyStatusRecord = const {},
+    DateTime? drugIntakeIntervalStart,
+    DateTime? drugIntakeIntervalEnd,
+  })  : drugIntakeIntervalStart = drugIntakeIntervalStart?.toUtc().toLocal(),
+        drugIntakeIntervalEnd = drugIntakeIntervalEnd?.toUtc().toLocal();
 
   Drug copyWith({
     String? name,
@@ -89,10 +103,13 @@ class Drug {
     String? drugIntakeFrequency,
     DateTime? drugIntakeIntervalStart,
     DateTime? drugIntakeIntervalEnd,
+    Map<int, DrugToTakeDailyStatus>? drugToTakeDailyStatusRecord,
     List<DosageTimeAndCount>? doseTimeAndCount,
     String? orderOfDrugIntake,
   }) {
     return Drug(
+      drugToTakeDailyStatusRecord:
+          drugToTakeDailyStatusRecord ?? this.drugToTakeDailyStatusRecord,
       name: name ?? this.name,
       intakeForm: intakeForm ?? this.intakeForm,
       reasonForDrug: reasonForDrug ?? this.reasonForDrug,
@@ -106,6 +123,9 @@ class Drug {
     );
   }
 
+  DrugToTakeDailyStatus get drugToTakeDailyStatusRecordForToday =>
+      drugToTakeDailyStatusRecord[DateTime.now().day] ??
+      DrugToTakeDailyStatus.waitingToBeTaken;
   static Drug empty = Drug(
     drugIntakeFrequency: '',
     drugIntakeIntervalEnd: DateTime.now(),
@@ -138,11 +158,13 @@ class Drug {
       drugIntakeFrequency: map['drugIntakeFrequency'] as String,
       drugIntakeIntervalStart: map['drugIntakeIntervalStart'] != null
           ? DateTime.fromMillisecondsSinceEpoch(
-              map['drugIntakeIntervalStart'] as int)
+              map['drugIntakeIntervalStart'] as int,
+            )
           : null,
       drugIntakeIntervalEnd: map['drugIntakeIntervalEnd'] != null
           ? DateTime.fromMillisecondsSinceEpoch(
-              map['drugIntakeIntervalEnd'] as int)
+              map['drugIntakeIntervalEnd'] as int,
+            )
           : null,
       doseTimeAndCount: List<DosageTimeAndCount>.from(
         (map['doseTimeAndCount'] as List<int>).map<DosageTimeAndCount>(
@@ -160,77 +182,46 @@ class Drug {
 
   @override
   String toString() {
-    return 'Drug(name: $name, intakeForm: $intakeForm, reasonForDrug: $reasonForDrug, drugIntakeFrequency: $drugIntakeFrequency, drugIntakeIntervalStart: $drugIntakeIntervalStart, drugIntakeIntervalEnd: $drugIntakeIntervalEnd, doseTimeAndCount: $doseTimeAndCount, orderOfDrugIntake: $orderOfDrugIntake)';
+    return 'Drug(name: $name,drugToTakeDailyStatusRecord: $drugToTakeDailyStatusRecord intakeForm: $intakeForm,'
+        ' reasonForDrug: $reasonForDrug,'
+        ' drugIntakeFrequency: $drugIntakeFrequency,'
+        ' drugIntakeIntervalStart: $drugIntakeIntervalStart,'
+        ' drugIntakeIntervalEnd: $drugIntakeIntervalEnd,'
+        ' doseTimeAndCount: $doseTimeAndCount, '
+        'orderOfDrugIntake: $orderOfDrugIntake)';
   }
 
-  @override
-  bool operator ==(covariant Drug other) {
+  bool isEqual(Drug other) {
     if (identical(this, other)) return true;
 
     return other.name == name &&
         other.intakeForm == intakeForm &&
         other.reasonForDrug == reasonForDrug &&
+        other.doseTimeAndCount.firstOrNull?.dosageTimeToBeTaken ==
+            doseTimeAndCount.firstOrNull?.dosageTimeToBeTaken &&
         other.drugIntakeFrequency == drugIntakeFrequency &&
         other.drugIntakeIntervalStart == drugIntakeIntervalStart &&
         other.drugIntakeIntervalEnd == drugIntakeIntervalEnd &&
-        listEquals(other.doseTimeAndCount, doseTimeAndCount) &&
+        other.drugToTakeDailyStatusRecordForToday ==
+            drugToTakeDailyStatusRecordForToday &&
         other.orderOfDrugIntake == orderOfDrugIntake;
   }
-
-  @override
-  int get hashCode {
-    return name.hashCode ^
-        intakeForm.hashCode ^
-        reasonForDrug.hashCode ^
-        drugIntakeFrequency.hashCode ^
-        drugIntakeIntervalStart.hashCode ^
-        drugIntakeIntervalEnd.hashCode ^
-        doseTimeAndCount.hashCode ^
-        orderOfDrugIntake.hashCode;
-  }
 }
 
-int compareDrugs(Drug a, Drug b) {
-  // Get the current date and time
-  final now = DateTime.now();
+extension ListOfDrugsEx on List<Drug> {
+  List<Drug> get getDrugsForToday {
+    // Get today's date without considering time
+    final today = DateTime.now().toUtc().toLocal();
+    final todayDate = DateTime(today.year, today.month, today.day);
+    // Filter drugs based on today's date
+    final drugsForToday = where((drug) =>
+        drug.drugIntakeIntervalStart != null &&
+        drug.drugIntakeIntervalEnd != null &&
+        (todayDate.isAfter(drug.drugIntakeIntervalStart!) ||
+            todayDate.isAtSameMomentAs(drug.drugIntakeIntervalStart!)) &&
+        (todayDate.isBefore(drug.drugIntakeIntervalEnd!) ||
+            todayDate.isAtSameMomentAs(drug.drugIntakeIntervalEnd!)));
 
-  // Calculate the scores for each drug based on proximity to current date and time
-  final scoreA = _calculateScore(a, now);
-  final scoreB = _calculateScore(b, now);
-
-  // Compare the scores
-  return scoreA.compareTo(scoreB);
-}
-
-int _calculateScore(Drug drug, DateTime now) {
-  // Calculate the score based on drugIntakeIntervalStart, drugIntakeIntervalEnd,
-  // and the time difference between the doseTimeAndCount and the current time.
-
-  var score = 0;
-
-  // If drugIntakeIntervalStart is available, calculate the difference in days
-  if (drug.drugIntakeIntervalStart != null) {
-    final daysDifference = now.difference(drug.drugIntakeIntervalStart!).inDays;
-    score += min(0, daysDifference); // Negative score for past dates
+    return drugsForToday.toList();
   }
-
-  // If drugIntakeIntervalEnd is available, calculate the difference in days
-  if (drug.drugIntakeIntervalEnd != null) {
-    final daysDifference = now.difference(drug.drugIntakeIntervalEnd!).inDays;
-    score += min(0, daysDifference); // Negative score for past dates
-  }
-
-  // Calculate the difference in minutes between each doseTimeAndCount and the current time
-  for (var dosage in drug.doseTimeAndCount) {
-    final minutesDifference = now
-        .difference(_combineDateAndTime(now, dosage.dosageTimeToBeTaken))
-        .inMinutes;
-    score += min(0, minutesDifference); // Negative score for past times
-  }
-
-  return score;
-}
-
-DateTime _combineDateAndTime(DateTime date, TimeOfDay time) {
-  return DateTime(date.year, date.month, date.day, time.hour, time.minute);
 }

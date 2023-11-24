@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:domain/domain.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -90,8 +88,8 @@ class AddMedicationCubit extends Cubit<SearchTextFieldState> {
     emit(state.copyWith(selectedIndex: isUnSelect ? -1 : selectedIndex));
   }
 
-  void onDateTimeSelected() {
-    emit(state.copyWith(selectedIndex: 0));
+  void onDateTimeSelected(DateTimeRange dateTimeRange) {
+    emit(state.copyWith(selectedIndex: 0, dateTimeRangeResult: dateTimeRange));
   }
 
   void onDosageTimeSelected(TimeOfDay dosageTime) {

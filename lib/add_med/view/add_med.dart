@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:med_mate/add_med/cubit/search_cubit.dart';
 import 'package:med_mate/add_med/view/add_med_search.dart';
-import 'package:med_mate/home/home.dart';
 import 'package:med_mate/l10n/l10n.dart';
 import 'package:med_mate/landing_page/cubit/landing_page_cubit.dart';
 import 'package:med_mate/widgets/widget.dart';
@@ -204,7 +203,6 @@ class DrugDoseTimeForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
     final doseNumberAsString = NumberToWordConverter.convert(doseNumber);
     return BlocProvider(
       create: (context) => AddMedicationCubit()
@@ -281,7 +279,6 @@ class DrugIntakeIntervalForm extends StatelessWidget {
   final Drug drug;
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
     return BlocProvider(
       create: (context) => AddMedicationCubit()
         ..onOpened(

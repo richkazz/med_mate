@@ -119,7 +119,7 @@ class AppTextField extends StatelessWidget {
               hintText: hintText,
               prefixIcon: prefix,
               suffixIcon: suffix,
-              fillColor: AppColors.fieldFillColor,
+              fillColor: AppColors.textFieldFillColor,
               filled: true,
               error: errorText == null
                   ? null
@@ -137,7 +137,7 @@ class AppTextField extends StatelessWidget {
                 width: 48,
               ),
               contentPadding:
-                  const EdgeInsets.symmetric(vertical: 18, horizontal: 11),
+                  const EdgeInsets.symmetric(vertical: 14, horizontal: 11),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(borderRadiusCircularSize),
                 borderSide: BorderSide.none,
