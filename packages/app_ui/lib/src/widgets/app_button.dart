@@ -19,7 +19,6 @@ class AppButton extends StatelessWidget {
     Size? maximumSize,
     Size? minimumSize,
     EdgeInsets? padding,
-    bool? isLoadingShimmer,
     double borderRadius = 10,
     super.key,
   })  : _buttonColor = buttonColor ?? Colors.white,
@@ -34,191 +33,6 @@ class AppButton extends StatelessWidget {
         _maximumSize = maximumSize ?? _defaultMaximumSize,
         _minimumSize = minimumSize ?? _defaultMinimumSize,
         _padding = padding ?? _defaultPadding;
-
-  /// Filled black button.
-  const AppButton.black({
-    required Widget child,
-    Key? key,
-    VoidCallback? onPressed,
-    double? elevation,
-    TextStyle? textStyle,
-  }) : this._(
-          key: key,
-          onPressed: onPressed,
-          buttonColor: AppColors.black,
-          child: child,
-          foregroundColor: AppColors.white,
-          elevation: elevation,
-          textStyle: textStyle,
-        );
-
-  /// Filled blue dress button.
-  const AppButton.blueDress({
-    required Widget child,
-    Key? key,
-    VoidCallback? onPressed,
-    double? elevation,
-    TextStyle? textStyle,
-  }) : this._(
-          key: key,
-          onPressed: onPressed,
-          buttonColor: AppColors.blueDress,
-          child: child,
-          foregroundColor: AppColors.white,
-          elevation: elevation,
-          textStyle: textStyle,
-        );
-
-  /// Filled crystal blue button.
-  const AppButton.crystalBlue({
-    required Widget child,
-    Key? key,
-    VoidCallback? onPressed,
-    double? elevation,
-    TextStyle? textStyle,
-  }) : this._(
-          key: key,
-          onPressed: onPressed,
-          buttonColor: AppColors.crystalBlue,
-          child: child,
-          foregroundColor: AppColors.white,
-          elevation: elevation,
-          textStyle: textStyle,
-        );
-
-  /// Filled red wine button.
-  const AppButton.redWine({
-    required Widget child,
-    Key? key,
-    VoidCallback? onPressed,
-    double? elevation,
-    TextStyle? textStyle,
-  }) : this._(
-          key: key,
-          onPressed: onPressed,
-          buttonColor: AppColors.redWine,
-          child: child,
-          foregroundColor: AppColors.white,
-          elevation: elevation,
-          textStyle: textStyle,
-        );
-
-  /// Filled secondary button.
-  const AppButton.secondary({
-    required Widget child,
-    Key? key,
-    VoidCallback? onPressed,
-    double? elevation,
-    TextStyle? textStyle,
-    Color? disabledButtonColor,
-  }) : this._(
-          key: key,
-          onPressed: onPressed,
-          buttonColor: AppColors.secondary,
-          child: child,
-          foregroundColor: AppColors.white,
-          disabledButtonColor: disabledButtonColor ?? AppColors.disabledSurface,
-          elevation: elevation,
-          textStyle: textStyle,
-          padding: _smallPadding,
-          maximumSize: _smallMaximumSize,
-          minimumSize: _smallMinimumSize,
-        );
-
-  /// Filled dark aqua button.
-  const AppButton.darkAqua({
-    required Widget child,
-    Key? key,
-    VoidCallback? onPressed,
-    double? elevation,
-    TextStyle? textStyle,
-  }) : this._(
-          key: key,
-          onPressed: onPressed,
-          buttonColor: AppColors.darkAqua,
-          child: child,
-          foregroundColor: AppColors.white,
-          elevation: elevation,
-          textStyle: textStyle,
-        );
-
-  /// Outlined white button.
-  const AppButton.outlinedWhite({
-    required Widget child,
-    Key? key,
-    VoidCallback? onPressed,
-    double? elevation,
-    TextStyle? textStyle,
-  }) : this._(
-          key: key,
-          onPressed: onPressed,
-          child: child,
-          buttonColor: AppColors.white,
-          borderSide: const BorderSide(
-            color: AppColors.pastelGrey,
-          ),
-          elevation: elevation,
-          foregroundColor: AppColors.lightBlack,
-          textStyle: textStyle,
-        );
-
-  /// Outlined transparent dark aqua button.
-  const AppButton.outlinedTransparentDarkAqua({
-    required Widget child,
-    Key? key,
-    VoidCallback? onPressed,
-    double? elevation,
-    TextStyle? textStyle,
-  }) : this._(
-          key: key,
-          onPressed: onPressed,
-          child: child,
-          buttonColor: AppColors.transparent,
-          borderSide: const BorderSide(
-            color: AppColors.paleSky,
-          ),
-          elevation: elevation,
-          foregroundColor: AppColors.darkAqua,
-          textStyle: textStyle,
-        );
-
-  /// Outlined transparent white button.
-  const AppButton.outlinedTransparentWhite({
-    required Widget child,
-    Key? key,
-    VoidCallback? onPressed,
-    double? elevation,
-    TextStyle? textStyle,
-  }) : this._(
-          key: key,
-          onPressed: onPressed,
-          child: child,
-          buttonColor: AppColors.transparent,
-          borderSide: const BorderSide(
-            color: AppColors.white,
-          ),
-          elevation: elevation,
-          foregroundColor: AppColors.white,
-          textStyle: textStyle,
-        );
-
-  /// Outlined transparent green button.
-  const AppButton.outlinedTransparentGreen({
-    required Widget child,
-    Key? key,
-    VoidCallback? onPressed,
-    double? elevation,
-    TextStyle? textStyle,
-  }) : this._(
-          key: key,
-          onPressed: onPressed,
-          child: child,
-          buttonColor: AppColors.transparent,
-          borderSide: const BorderSide(color: AppColors.green, width: 3),
-          elevation: elevation,
-          foregroundColor: AppColors.white,
-          textStyle: textStyle,
-        );
 
   /// filled dark blue button
   const AppButton.primary({
@@ -296,8 +110,8 @@ class AppButton extends StatelessWidget {
           ),
         );
 
-  /// Filled transparent dark aqua button.
-  const AppButton.transparentDarkAqua({
+  /// filled dark blue button
+  const AppButton.smallTransparentWithDullBorder({
     required Widget child,
     Key? key,
     VoidCallback? onPressed,
@@ -307,278 +121,33 @@ class AppButton extends StatelessWidget {
           key: key,
           onPressed: onPressed,
           child: child,
-          buttonColor: AppColors.transparent,
-          elevation: elevation,
-          foregroundColor: AppColors.darkAqua,
-          textStyle: textStyle,
-        );
-
-  /// Filled transparent white button.
-  const AppButton.transparentWhite({
-    required Widget child,
-    Key? key,
-    VoidCallback? onPressed,
-    double? elevation,
-    TextStyle? textStyle,
-  }) : this._(
-          key: key,
-          onPressed: onPressed,
-          child: child,
-          disabledButtonColor: AppColors.transparent,
+          borderRadius: 20,
+          borderSide: const BorderSide(color: AppColors.dividerColor),
           buttonColor: AppColors.transparent,
           elevation: elevation,
           foregroundColor: AppColors.white,
           disabledForegroundColor: AppColors.white,
+          disabledButtonColor: AppColors.white,
           textStyle: textStyle,
-        );
-
-  /// Filled transparent white button.
-  const AppButton.transparentWithBlueBorder({
-    required Widget child,
-    Key? key,
-    VoidCallback? onPressed,
-    double? elevation,
-    TextStyle? textStyle,
-  }) : this._(
-          key: key,
-          onPressed: onPressed,
-          child: child,
-          disabledButtonColor: AppColors.transparent,
-          buttonColor: AppColors.transparent,
-          elevation: elevation,
-          borderSide: const BorderSide(color: AppColors.skyBlue),
-          foregroundColor: AppColors.white,
-          disabledForegroundColor: AppColors.white,
-          textStyle: textStyle,
-          padding: _smallPadding,
-        );
-
-  /// Filled transparent white button.
-  const AppButton.transparentWithBlueBorderSmall({
-    required Widget child,
-    Key? key,
-    VoidCallback? onPressed,
-    double? elevation,
-    TextStyle? textStyle,
-  }) : this._(
-          key: key,
-          onPressed: onPressed,
-          child: child,
-          disabledButtonColor: AppColors.transparent,
-          buttonColor: AppColors.transparent,
-          elevation: elevation,
-          borderSide: const BorderSide(color: AppColors.darkAqua),
-          foregroundColor: AppColors.white,
-          disabledForegroundColor: AppColors.white,
-          textStyle: textStyle,
-          padding: const EdgeInsets.only(top: 2),
-        );
-
-  /// Filled small red wine blue button.
-  const AppButton.smallRedWine({
-    required Widget child,
-    Key? key,
-    VoidCallback? onPressed,
-    double? elevation,
-  }) : this._(
-          key: key,
-          onPressed: onPressed,
-          buttonColor: AppColors.redWine,
-          child: child,
-          foregroundColor: AppColors.white,
-          elevation: elevation,
           maximumSize: _smallMaximumSize,
           minimumSize: _smallMinimumSize,
-          padding: _smallPadding,
-        );
-
-  /// Filled small transparent button.
-  const AppButton.smallDarkAqua({
-    required Widget child,
-    Key? key,
-    VoidCallback? onPressed,
-    double? elevation,
-  }) : this._(
-          key: key,
-          onPressed: onPressed,
-          buttonColor: AppColors.darkAqua,
-          child: child,
-          foregroundColor: AppColors.white,
-          elevation: elevation,
-          maximumSize: _smallMaximumSize,
-          minimumSize: _smallMinimumSize,
-          padding: _smallPadding,
-        );
-
-  /// Filled small green button.
-  const AppButton.smallGreen({
-    required Widget child,
-    Key? key,
-    VoidCallback? onPressed,
-    double? elevation,
-  }) : this._(
-          key: key,
-          onPressed: onPressed,
-          buttonColor: AppColors.green,
-          child: child,
-          foregroundColor: AppColors.white,
-          elevation: elevation,
-          maximumSize: _smallMaximumSize,
-          minimumSize: _smallMinimumSize,
-          padding: _smallPadding,
-        );
-
-  /// Filled small green button.
-  const AppButton.smallLightGreen({
-    required Widget child,
-    Key? key,
-    VoidCallback? onPressed,
-    double? elevation,
-  }) : this._(
-          key: key,
-          onPressed: onPressed,
-          buttonColor: const Color.fromRGBO(246, 254, 249, 1),
-          child: child,
-          foregroundColor: AppColors.white,
-          elevation: elevation,
-          maximumSize: _smallMaximumSize,
-          minimumSize: _smallMinimumSize,
-          padding: _smallPadding,
-        );
-
-  /// Filled small transparent button.
-  const AppButton.smallTransparent({
-    required Widget child,
-    Key? key,
-    VoidCallback? onPressed,
-    double? elevation,
-  }) : this._(
-          key: key,
-          onPressed: onPressed,
-          buttonColor: AppColors.transparent,
-          child: child,
-          foregroundColor: AppColors.darkAqua,
-          elevation: elevation,
-          maximumSize: _smallMaximumSize,
-          minimumSize: _smallMinimumSize,
-          padding: _smallPadding,
-        );
-
-  /// Filled small transparent button.
-  const AppButton.smallOutlineTransparent({
-    required Widget child,
-    Key? key,
-    VoidCallback? onPressed,
-    double? elevation,
-  }) : this._(
-          key: key,
-          onPressed: onPressed,
-          buttonColor: AppColors.transparent,
-          child: child,
-          borderSide: const BorderSide(
-            color: AppColors.paleSky,
+          padding: const EdgeInsets.only(
+            bottom: AppSpacing.xs,
+            top: AppSpacing.xs,
           ),
-          foregroundColor: AppColors.darkAqua,
-          elevation: elevation,
-          maximumSize: _smallMaximumSize,
-          minimumSize: _smallMinimumSize,
-          padding: _smallPadding,
-        );
-
-  ///
-  const AppButton.smallFilledGray({
-    required Widget child,
-    Key? key,
-    VoidCallback? onPressed,
-    double? elevation,
-  }) : this._(
-          key: key,
-          onPressed: onPressed,
-          buttonColor: AppColors.black,
-          child: child,
-          borderRadius: 30,
-          borderSide: BorderSide.none,
-          foregroundColor: AppColors.darkAqua,
-          elevation: elevation,
-          maximumSize: _smallMaximumSize,
-          minimumSize: _smallMinimumSize,
-          padding: _smallPadding,
-        );
-
-  ///
-  const AppButton.smallFilledYellow({
-    required Widget child,
-    Key? key,
-    VoidCallback? onPressed,
-    double? elevation,
-  }) : this._(
-          key: key,
-          onPressed: onPressed,
-          buttonColor: const Color.fromRGBO(242, 153, 74, 1),
-          child: child,
-          borderRadius: 30,
-          borderSide: BorderSide.none,
-          foregroundColor: AppColors.darkAqua,
-          elevation: elevation,
-          maximumSize: _smallMaximumSize,
-          minimumSize: _smallMinimumSize,
-          padding: _smallPadding,
-        );
-
-  ///
-  const AppButton.smallFilledRedWhine({
-    required Widget child,
-    Key? key,
-    VoidCallback? onPressed,
-    double? elevation,
-  }) : this._(
-          key: key,
-          onPressed: onPressed,
-          buttonColor: const Color.fromRGBO(255, 248, 235, 1),
-          child: child,
-          borderRadius: 30,
-          borderSide: BorderSide.none,
-          foregroundColor: const Color.fromRGBO(255, 248, 235, 1),
-          elevation: elevation,
-          maximumSize: _smallMaximumSize,
-          minimumSize: _smallMinimumSize,
-          padding: _smallPadding,
-        );
-
-  ///
-  const AppButton.smallFilledGreen({
-    required Widget child,
-    Key? key,
-    VoidCallback? onPressed,
-    double? elevation,
-  }) : this._(
-          key: key,
-          onPressed: onPressed,
-          buttonColor: const Color.fromRGBO(18, 183, 106, 1),
-          child: child,
-          borderRadius: 30,
-          borderSide: BorderSide.none,
-          foregroundColor: const Color.fromRGBO(255, 248, 235, 1),
-          elevation: elevation,
-          maximumSize: _smallMaximumSize,
-          minimumSize: _smallMinimumSize,
-          padding: const EdgeInsets.only(left: 3, right: 3),
         );
 
   /// The maximum size of the small variant of the button.
   static const _smallMaximumSize = Size(double.infinity, 40);
 
   /// The minimum size of the small variant of the button.
-  static const _smallMinimumSize = Size(0, 40);
+  static const _smallMinimumSize = Size(90, 40);
 
   /// The maximum size of the button.
   static const _defaultMaximumSize = Size(double.infinity, 56);
 
   /// The minimum size of the button.
   static const _defaultMinimumSize = Size(double.infinity, 56);
-
-  /// The padding of the small variant of the button.
-  static const _smallPadding = EdgeInsets.symmetric(horizontal: AppSpacing.md);
 
   /// The padding of the the button.
   static const _defaultPadding = EdgeInsets.symmetric(vertical: AppSpacing.lg);

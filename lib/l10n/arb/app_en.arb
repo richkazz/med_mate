@@ -129,6 +129,120 @@
     "description": "Instruction prompting the user to enter the method or way they are required to take the medication",
     "type": "text",
     "placeholders": {}
+  },
+  "selectReportTime": "Select a time for the medical reports you want to view",
+  "@selectReportTime": {
+    "description": "Instruction prompting the user to choose a time for viewing medical reports",
+    "type": "text",
+    "placeholders": {}
+  },
+  "thisMonth": "This month",
+  "@thisMonth": {
+    "description": "Text indicating the current month",
+    "type": "text",
+    "placeholders": {}
+  },
+  "lastMonth": "Last month",
+  "@lastMonth": {
+    "description": "Text indicating the previous month",
+    "type": "text",
+    "placeholders": {}
+  },
+  "chooseSpecificTime": "Choose a specific time",
+  "@chooseSpecificTime": {
+    "description": "Instruction prompting the user to select a specific time",
+    "type": "text",
+    "placeholders": {}
+  },
+  "medicalReportsVisibility": "Your medical reports will be visible here and also available to a professional you give access to.",
+  "@medicalReportsVisibility": {
+    "description": "Text indicating that medical reports will be visible and accessible to the user and authorized professionals",
+    "type": "text",
+    "placeholders": {}
+  },
+  "saveAndConfirm": "Save & confirm",
+  "@saveAndConfirm": {
+    "description": "Text indicating an action to save and confirm",
+    "type": "text",
+    "placeholders": {}
+  },
+  "home": "Home",
+  "@home": {
+    "description": "Text indicating the 'Home' action or link",
+    "type": "text",
+    "placeholders": {}
+  },
+  "reports": "Reports",
+  "@reports": {
+    "description": "Text indicating the 'Reports' section or action",
+    "type": "text",
+    "placeholders": {}
+  },
+  "settings": "Settings",
+  "@settings": {
+    "description": "Text indicating the 'Settings' section or action",
+    "type": "text",
+    "placeholders": {}
+  },
+  "doctors": "Doctors",
+  "@doctors": {
+    "description": "Text indicating the 'Doctors' section or action",
+    "type": "text",
+    "placeholders": {}
+  },
+  "helpAndSupport": "Help and Support",
+  "@helpAndSupport": {
+    "description": "Text indicating the 'Help and Support' section or action",
+    "type": "text",
+    "placeholders": {}
+  },
+  "addProfessional": "Add a professional",
+  "@addProfessional": {
+    "description": "Text indicating the action to add a professional",
+    "type": "text",
+    "placeholders": {}
+  },
+  "addMedicalProfessional": "Add a medical professional which you can grant access to view your medical reports.",
+  "@addMedicalProfessional": {
+    "description": "Text indicating the action to add a medical professional for granting access to view medical reports",
+    "type": "text",
+    "placeholders": {}
+  },
+  "doctorsName": "Doctor’s Name",
+  "@doctorsName": {
+    "description": "Text indicating the field or label for entering a doctor's name",
+    "type": "text",
+    "placeholders": {}
+  },
+  "specialty": "Specialty",
+  "@specialty": {
+    "description": "Text indicating the field or label for entering a medical professional's specialty",
+    "type": "text",
+    "placeholders": {}
+  },
+  "doctorsEmail": "Doctor’s email",
+  "@doctorsEmail": {
+    "description": "Text indicating the field or label for entering a doctor's email",
+    "type": "text",
+    "placeholders": {}
+  },
+  "addDoctor": "Add Doctor",
+  "@addDoctor": {
+    "description": "Text indicating the action to add a doctor",
+    "type": "text",
+    "placeholders": {}
+  },
+  "editDoctor": "Edit Doctor",
+  "@editDoctor": {
+    "description": "Text indicating the action to edit a doctor",
+    "type": "text",
+    "placeholders": {}
+  },
+  "deleteDoctor": "Delete Doctor",
+  "@deleteDoctor": {
+    "description": "Text indicating the action to delete a doctor",
+    "type": "text",
+    "placeholders": {}
   }
 
 }

@@ -198,7 +198,11 @@ class AddMedicationSteps extends StatelessWidget {
           width: MediaQuery.sizeOf(context).width,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(
-                AppSpacing.md, 0, AppSpacing.md, AppSpacing.md),
+              AppSpacing.md,
+              0,
+              AppSpacing.md,
+              AppSpacing.md,
+            ),
             child: Column(
               children: [
                 Container(

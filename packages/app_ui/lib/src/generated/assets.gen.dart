@@ -207,6 +207,10 @@ class $AssetsIconsGen {
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/Medicine-cuate 1.png
+  AssetGenImage get medicineCuate1 =>
+      const AssetGenImage('assets/images/Medicine-cuate 1.png');
+
   /// File path: assets/images/app_logo.png
   AssetGenImage get appLogo =>
       const AssetGenImage('assets/images/app_logo.png');
@@ -245,6 +249,7 @@ class $AssetsImagesGen {
 
   /// List of all assets
   List<dynamic> get values => [
+        medicineCuate1,
         appLogo,
         appLogo2,
         boyFace,

@@ -89,7 +89,7 @@ class AppNotify extends ValueNotifier<(NotifyType, String?, VoidCallback?)> {
                   ),
                 ),
                 // Display the confirmation button.
-                AppButton.secondary(
+                AppButton.primary(
                   onPressed: () {
                     onPressed();
                     Navigator.pop(context);

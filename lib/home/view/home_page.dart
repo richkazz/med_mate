@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:med_mate/home/home.dart';
+import 'package:med_mate/report/report.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -16,6 +17,7 @@ class HomePage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => HomeCubit()),
+        BlocProvider(create: (_) => ReportCubit()),
       ],
       child: const HomeView(),
     );

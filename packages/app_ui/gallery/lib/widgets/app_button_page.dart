@@ -196,97 +196,17 @@ enum ButtonType {
 class _AppButtonItem extends StatelessWidget {
   const _AppButtonItem({required this.buttonType, required this.child});
 
-  AppButton get appButton {
-    switch (buttonType) {
-      case ButtonType.google:
-        return AppButton.outlinedWhite(
-          onPressed: () {},
-          child: child,
-        );
-      case ButtonType.apple:
-        return AppButton.black(
-          child: child,
-          onPressed: () {},
-        );
-      case ButtonType.facebook:
-        return AppButton.blueDress(
-          child: child,
-          onPressed: () {},
-        );
-      case ButtonType.twitter:
-        return AppButton.crystalBlue(
-          onPressed: () {},
-          child: child,
-        );
-      case ButtonType.email:
-        return AppButton.outlinedTransparentDarkAqua(
-          onPressed: () {},
-          child: child,
-        );
-      case ButtonType.login:
-        return AppButton.outlinedTransparentDarkAqua(
-          onPressed: () {},
-          child: child,
-        );
-      case ButtonType.subscribe:
-        return AppButton.redWine(
-          child: child,
-          onPressed: () {},
-        );
-      case ButtonType.information:
-        return AppButton.darkAqua(
-          onPressed: () {},
-          child: child,
-        );
-      case ButtonType.trial:
-        return AppButton.smallRedWine(
-          onPressed: () {},
-          child: child,
-        );
-      case ButtonType.logout:
-        return AppButton.smallDarkAqua(
-          onPressed: () {},
-          child: child,
-        );
-      case ButtonType.details:
-        return AppButton.smallOutlineTransparent(
-          onPressed: () {},
-          child: child,
-        );
-      case ButtonType.cancel:
-        return AppButton.smallTransparent(
-          onPressed: () {},
-          child: child,
-        );
-      case ButtonType.watchVideo:
-        return AppButton.transparentDarkAqua(
-          onPressed: () {},
-          child: child,
-        );
-      case ButtonType.watchVideoDark:
-        return AppButton.transparentWhite(
-          onPressed: () {},
-          child: child,
-        );
-      case ButtonType.logInSubscribe:
-        return AppButton.outlinedTransparentWhite(
-          onPressed: () {},
-          child: child,
-        );
-    }
-  }
-
   final Widget child;
   final ButtonType buttonType;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
+    return const Padding(
+      padding: EdgeInsets.symmetric(
         horizontal: AppSpacing.lg,
         vertical: AppSpacing.lg,
       ),
-      child: appButton,
+      child: SizedBox(),
     );
   }
 }

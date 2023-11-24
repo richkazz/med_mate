@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:med_mate/app/app.dart';
 import 'package:med_mate/home/home.dart';
+import 'package:med_mate/l10n/l10n.dart';
 import 'package:med_mate/landing_page/landing_page.dart';
+import 'package:med_mate/report/view/report.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -30,7 +32,7 @@ class HomeView extends StatelessWidget {
       child: Scaffold(
         body: IndexedStack(
           index: selectedTab,
-          children: const [LandingPage()],
+          children: const [LandingPage(), ReportPage()],
         ),
         bottomNavigationBar: BottomNavBar(
           currentIndex: selectedTab,
@@ -77,19 +79,19 @@ class BottomNavBar extends StatelessWidget {
                     activeIcon:
                         Assets.icons.home04Active.svg(package: 'app_ui'),
                     icon: Assets.icons.home04.svg(package: 'app_ui'),
-                    label: 'Home',
+                    label: context.l10n.home,
                   ),
                   BottomNavigationBarItem(
                     activeIcon:
                         Assets.icons.pieChartActive.svg(package: 'app_ui'),
                     icon: Assets.icons.pieChart.svg(package: 'app_ui'),
-                    label: 'Home',
+                    label: context.l10n.reports,
                   ),
                   BottomNavigationBarItem(
                     activeIcon:
                         Assets.icons.setting03Active.svg(package: 'app_ui'),
                     icon: Assets.icons.setting03.svg(package: 'app_ui'),
-                    label: 'Home',
+                    label: context.l10n.settings,
                   ),
                 ],
                 currentIndex: currentIndex,
