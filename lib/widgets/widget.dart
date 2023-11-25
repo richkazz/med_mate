@@ -35,6 +35,22 @@ class DrawHorizontalLine extends StatelessWidget {
   }
 }
 
+class AppButtonText extends StatelessWidget {
+  const AppButtonText({required this.text, required this.color, super.key});
+  final String text;
+  final Color color;
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+            color: color,
+            fontWeight: FontWeight.w400,
+          ),
+    );
+  }
+}
+
 class DecoratedBoxWithPrimaryBorder extends StatelessWidget {
   const DecoratedBoxWithPrimaryBorder({
     required this.child,

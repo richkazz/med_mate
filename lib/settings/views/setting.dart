@@ -1,5 +1,6 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:med_mate/doctor/doctor.dart';
 import 'package:med_mate/l10n/l10n.dart';
 import 'package:med_mate/widgets/widget.dart';
 
@@ -83,7 +84,9 @@ class GeneralSettingSection extends StatelessWidget {
                 GeneralSettingActionItem(
                   actionText: l10n.doctors,
                   icon: Assets.icons.stethoscope.svg(package: 'app_ui'),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(context, DoctorPage.route());
+                  },
                 ),
                 const SizedBox(
                   height: AppSpacing.md,

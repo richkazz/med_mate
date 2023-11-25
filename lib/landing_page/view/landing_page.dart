@@ -46,9 +46,7 @@ class LandingPage extends StatelessWidget {
               children: [
                 const Text('Nov'),
                 IconButton(
-                  onPressed: () {
-                    context.read<LandingPageCubit>().showCalenderToSelect();
-                  },
+                  onPressed: null,
                   icon: Assets.icons.calendar03.svg(
                     height: 20,
                     width: 20,
