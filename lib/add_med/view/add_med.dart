@@ -233,7 +233,7 @@ class DrugDoseTimeForm extends StatelessWidget {
           //Due to the possibility of navigating back to this page
           //and the way list works, we need to check if a DosageTimeAndCount
           //as been added for this particular [[doseNumber]
-          if (drugResult.doseTimeAndCount.length == doseNumber) {
+          if (drugResult.doseTimeAndCount.length >= doseNumber) {
             drugResult.doseTimeAndCount[doseNumber - 1] = DosageTimeAndCount(
               dosageTimeToBeTaken: result.$1,
               dosageCount: result.$2,
