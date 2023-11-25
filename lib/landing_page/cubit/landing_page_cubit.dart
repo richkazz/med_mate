@@ -1,10 +1,13 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
-
-import 'package:app_ui/app_ui.dart';
 import 'package:domain/domain.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:med_mate/application/application.dart';
+
+import 'package:med_mate/landing_page/cubit/background_task_to_check_missed_drugs.dart';
+import 'package:med_mate/landing_page/cubit/background_task_to_check_remaining_time.dart';
+import 'package:med_mate/landing_page/cubit/landing_page_state.dart';
 
 /// Enum representing different states of the landing page.
 enum LandingPageEnum {
@@ -18,15 +21,23 @@ enum LandingPageEnum {
 /// Cubit managing the state for the landing page.
 class LandingPageCubit extends Cubit<LandingPageState> {
   /// Constructor for LandingPageCubit.
-  LandingPageCubit(this._drugRepository) : super(const LandingPageState());
+  LandingPageCubit(this._drugRepository)
+      : super(
+          LandingPageState(nextDosageTime: (Duration.zero, Drug.empty, -1)),
+        );
   final DrugRepository _drugRepository;
   BackgroundTaskToCheckMissedDrugs? _checkMissedDrugs;
+  BackgroundTaskToCheckRemainingTime? _remainingTime;
 
   /// Saves a new drug that has been added.
   Future<void> saveNewDrugAdded(Drug drug) async {
     final result = await _drugRepository.createDrug(drug);
     final newListOfDrugs = [...state.drugs, result.data!];
-    emit(state.copyWith(drugs: _sortedDrugs(newListOfDrugs)));
+    emit(
+      state.copyWith(
+        drugs: _sortedDrugs(newListOfDrugs),
+      ),
+    );
     initiateBackgroundTask();
   }
 
@@ -35,6 +46,7 @@ class LandingPageCubit extends Cubit<LandingPageState> {
     _disposeBackgroundTaskIfNotNull();
 
     _checkMissedDrugs = BackgroundTaskToCheckMissedDrugs(state.drugs);
+    _remainingTime = BackgroundTaskToCheckRemainingTime(state.drugs);
 
     _checkMissedDrugs?.eventStream.listen((value) {
       changeDrugStatusForToday(
@@ -43,6 +55,11 @@ class LandingPageCubit extends Cubit<LandingPageState> {
         value.$2,
       );
     });
+    _remainingTime?.eventStream.listen(_emitUpdatedTime);
+  }
+
+  void _emitUpdatedTime((Duration, Drug, int) re) {
+    emit(state.copyWith(nextDosageTime: re));
   }
 
   /// Change the daily status of a specific dose of a drug for the current day.
@@ -90,7 +107,11 @@ class LandingPageCubit extends Cubit<LandingPageState> {
     newListOfDrug[indexOfDrug] = newDrug;
     await _drugRepository.updateDrug(newDrug, 0);
     // Emit a new state with the updated list of drugs
-    emit(state.copyWith(drugs: newListOfDrug));
+    emit(
+      state.copyWith(
+        drugs: newListOfDrug,
+      ),
+    );
 
     // Initiate the background task to check for missed drugs
     initiateBackgroundTask();
@@ -112,81 +133,14 @@ class LandingPageCubit extends Cubit<LandingPageState> {
     if (_checkMissedDrugs.isNotNull) {
       _checkMissedDrugs!.dispose();
     }
+    if (_remainingTime.isNotNull) {
+      _remainingTime!.dispose();
+    }
   }
 
   @override
   Future<void> close() {
     _disposeBackgroundTaskIfNotNull();
     return super.close();
-  }
-}
-
-/// Represents the state of the landing page.
-class LandingPageState extends Equatable {
-  const LandingPageState({
-    this.drugs = const [],
-    this.landingPageEnum = LandingPageEnum.initial,
-  });
-  final List<Drug> drugs;
-  final LandingPageEnum landingPageEnum;
-
-  /// Creates a copy of the state with optional new values.
-  LandingPageState copyWith({
-    List<Drug>? drugs,
-    LandingPageEnum? landingPageEnum,
-  }) {
-    return LandingPageState(
-      drugs: drugs ?? this.drugs,
-      landingPageEnum: landingPageEnum ?? this.landingPageEnum,
-    );
-  }
-
-  @override
-  List<Object?> get props => [...drugs, landingPageEnum, drugs.length];
-}
-
-/// Background task for checking missed drugs.
-class BackgroundTaskToCheckMissedDrugs {
-  BackgroundTaskToCheckMissedDrugs(this.drugs) {
-    _timer =
-        Timer.periodic(const Duration(minutes: 3), _checkIfDrugTimeHasPassed);
-  }
-
-  final List<Drug> drugs;
-  final StreamController<(Drug, int)> _eventStreamController =
-      StreamController<(Drug, int)>();
-  Timer? _timer;
-
-  /// Disposes the background task.
-  void dispose() {
-    _timer?.cancel();
-    _eventStreamController.close();
-  }
-
-  /// Stream of drugs events.
-  Stream<(Drug, int)> get eventStream => _eventStreamController.stream;
-
-  /// Checks if the time for taking a drug has passed.
-  void _checkIfDrugTimeHasPassed(_) {
-    final isAnyWaitingToBeTaken = drugs.any(
-      (element) => element.doseTimeAndCount.any(
-        (dosageTimeAndCount) => dosageTimeAndCount
-            .drugToTakeDailyStatusRecordForToday.isWaitingToBeTaken,
-      ),
-    );
-    if (!isAnyWaitingToBeTaken) {
-      dispose();
-    }
-    final now = DateTime.now();
-    for (final drug in drugs) {
-      for (var i = 0; i < drug.doseTimeAndCount.length; i++) {
-        if (drug.doseTimeAndCount[i].dosageTimeToBeTaken.combineDateAndTime
-                .isBefore(now) &&
-            drug.doseTimeAndCount[i].drugToTakeDailyStatusRecordForToday
-                .isWaitingToBeTaken) {
-          _eventStreamController.add((drug, i));
-        }
-      }
-    }
   }
 }

@@ -6,6 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:med_mate/landing_page/cubit/landing_page_cubit.dart';
 
+import 'package:med_mate/landing_page/cubit/landing_page_state.dart';
+
 class WeekDayItem extends StatelessWidget {
   const WeekDayItem({
     required this.weekDayNumber,

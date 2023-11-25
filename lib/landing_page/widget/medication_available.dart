@@ -6,6 +6,9 @@ import 'package:med_mate/landing_page/cubit/landing_page_cubit.dart';
 import 'package:med_mate/landing_page/widget/drug_detail.dart';
 import 'package:med_mate/widgets/widget.dart';
 
+import '../cubit/landing_page_state.dart';
+import 'medication_available_section_one.dart';
+
 class MedicationAvailable extends StatelessWidget {
   const MedicationAvailable({super.key});
 
@@ -51,69 +54,6 @@ class MedicationAvailable extends StatelessWidget {
           },
         ),
       ],
-    );
-  }
-}
-
-class MedicationAvailableSectionOne extends StatelessWidget {
-  const MedicationAvailableSectionOne({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: CirclePainter(
-        color: AppColors.bottomNavBarColor,
-        radius: 100,
-      ),
-      child: CustomPaint(
-        painter:
-            CirclePainter(color: AppColors.white, radius: 90, filled: true),
-        child: CustomPaint(
-          painter: CirclePainter(
-            color: AppColors.primaryColor,
-            radius: 86,
-            filled: true,
-          ),
-          child: Column(
-            children: [
-              Text(
-                'Next dose in',
-                style: ContentTextStyle.bodyText2.copyWith(
-                  color: AppColors.white,
-                ),
-              ),
-              const SizedBox(
-                height: AppSpacing.sm,
-              ),
-              Text(
-                '3 hours',
-                style: ContentTextStyle.headline5.copyWith(
-                  color: AppColors.white,
-                ),
-              ),
-              const SizedBox(
-                height: AppSpacing.md,
-              ),
-              SizedBox(
-                width: 90,
-                height: 35,
-                child: AppButton.primaryFilledWhite(
-                  borderRadius: 25,
-                  child: Text(
-                    'Take now',
-                    style: ContentTextStyle.labelSmall.copyWith(
-                      color: AppColors.primaryColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

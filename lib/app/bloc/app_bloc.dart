@@ -12,7 +12,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     required User user,
   }) : super(
           user == User.anonymous
-              ? AppState.onboardingRequired(user)
+              ? AppState.unauthenticated()
               : AppState.authenticated(user),
         ) {
     on<AppUserChanged>(_onUserChanged);
