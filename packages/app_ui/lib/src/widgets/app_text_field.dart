@@ -162,11 +162,31 @@ class AppTextField extends StatelessWidget {
   }
 }
 
+class _PasswordEyeChange extends StatelessWidget {
+  const _PasswordEyeChange({
+    required this.onTap,
+    required this.isPasswordVisible,
+  });
+  final VoidCallback onTap;
+  final bool isPasswordVisible;
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Icon(
+        isPasswordVisible
+            ? Icons.visibility_off_outlined
+            : Icons.visibility_outlined,
+      ),
+    );
+  }
+}
+
 /// {@template app_text_field}
 /// A text field component based on material [TextFormField] widget with a
 /// fixed, left-aligned label text displayed above the text field.
 /// {@endtemplate}
-class AppTextFieldOutlined extends StatelessWidget {
+class AppTextFieldOutlined extends StatefulWidget {
   /// {@macro app_text_field}
   const AppTextFieldOutlined({
     super.key,
@@ -258,6 +278,25 @@ class AppTextFieldOutlined extends StatelessWidget {
   final VoidCallback? onTap;
 
   @override
+  State<AppTextFieldOutlined> createState() => _AppTextFieldOutlinedState();
+}
+
+class _AppTextFieldOutlinedState extends State<AppTextFieldOutlined> {
+  late bool isPasswordVisible;
+  @override
+  void initState() {
+    isPasswordVisible = widget.obscureText;
+
+    super.initState();
+  }
+
+  void onPasswordVisibilityChange() {
+    setState(() {
+      isPasswordVisible = !isPasswordVisible;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isLightMode = theme.colorScheme.brightness == Brightness.light;
@@ -266,41 +305,47 @@ class AppTextFieldOutlined extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: 80),
+          constraints: const BoxConstraints(minHeight: 60),
           child: TextFormField(
-            key: key,
-            focusNode: focusNode,
-            initialValue: initialValue,
-            controller: controller,
-            inputFormatters: inputFormatters,
-            keyboardType: keyboardType,
-            autocorrect: autocorrect,
-            readOnly: readOnly,
-            autofillHints: autoFillHints,
-            validator: validator,
+            key: widget.key,
+            focusNode: widget.focusNode,
+            initialValue: widget.initialValue,
+            controller: widget.controller,
+            inputFormatters: widget.inputFormatters,
+            keyboardType: widget.keyboardType,
+            autocorrect: widget.autocorrect,
+            readOnly: widget.readOnly,
+            autofillHints: widget.autoFillHints,
+            validator: widget.validator,
             cursorColor: AppColors.darkAqua,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w500,
                 ),
-            onFieldSubmitted: onSubmitted,
+            onFieldSubmitted: widget.onSubmitted,
             decoration: InputDecoration(
-              hintText: hintText,
-              labelText: labelText,
+              hintText: widget.hintText,
+              labelText: widget.labelText,
               hintStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: !isLightMode
                         ? const Color.fromRGBO(252, 252, 253, 1)
                         : AppColors.black,
                   ),
-              error: errorText == null
+              error: widget.errorText == null
                   ? null
                   : Text(
-                      errorText!,
+                      widget.errorText!,
                       softWrap: true,
                       style:
                           const TextStyle(color: AppColors.red, fontSize: 13),
                     ),
-              prefixIcon: prefix,
-              suffixIcon: suffix,
+              prefixIcon: widget.prefix,
+              suffixIcon: widget.keyboardType == TextInputType.visiblePassword
+                  ? _PasswordEyeChange(
+                      isPasswordVisible: isPasswordVisible,
+                      onTap: onPasswordVisibilityChange,
+                    )
+                  : widget.suffix,
+              errorMaxLines: 7,
               filled: true,
               fillColor: isLightMode
                   ? const Color.fromRGBO(252, 252, 253, 1)
@@ -320,24 +365,27 @@ class AppTextFieldOutlined extends StatelessWidget {
                   color: AppColors.background,
                   style: BorderStyle.none,
                 ),
-                borderRadius: BorderRadius.circular(borderRadiusCircularSize),
+                borderRadius:
+                    BorderRadius.circular(widget.borderRadiusCircularSize),
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide: const BorderSide(
                   color: AppColors.blue,
                 ),
-                borderRadius: BorderRadius.circular(borderRadiusCircularSize),
+                borderRadius:
+                    BorderRadius.circular(widget.borderRadiusCircularSize),
               ),
               enabledBorder: OutlineInputBorder(
                 borderSide: const BorderSide(
                   color: Color.fromRGBO(208, 213, 221, 1),
                 ),
-                borderRadius: BorderRadius.circular(borderRadiusCircularSize),
+                borderRadius:
+                    BorderRadius.circular(widget.borderRadiusCircularSize),
               ),
             ),
-            onChanged: onChanged,
-            onTap: onTap,
-            obscureText: obscureText,
+            onChanged: widget.onChanged,
+            onTap: widget.onTap,
+            obscureText: isPasswordVisible,
           ),
         ),
       ],

@@ -165,16 +165,49 @@ class LoadingContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder<(NotifyType, String?, VoidCallback?)>(
       valueListenable: AppNotify.loadingValueNotify,
-      builder: (BuildContext context,
-          (NotifyType, String?, VoidCallback?) value, Widget? child) {
+      builder: (
+        BuildContext context,
+        (NotifyType, String?, VoidCallback?) value,
+        Widget? child,
+      ) {
         return Container(
           height: value.$1.isNone ? 0 : MediaQuery.sizeOf(context).height,
           width: value.$1.isNone ? 0 : MediaQuery.sizeOf(context).width,
           color: AppColors.black.withOpacity(0.1),
           child: value.$1.isError
-              ? Text(value.$2 ?? 'error')
+              ? Scaffold(
+                  backgroundColor: AppColors.transparent,
+                  body: Stack(
+                    children: [
+                      ModalBarrier(
+                        onDismiss: () {
+                          AppNotify.dismissNotify();
+                          if (value.$3 != null) {
+                            value.$3!();
+                          }
+                        },
+                      ),
+                      Center(child: Text(value.$2 ?? 'error')),
+                    ],
+                  ),
+                )
               : value.$1.isSuccessful
-                  ? Text(value.$2 ?? 'success')
+                  ? Scaffold(
+                      backgroundColor: AppColors.transparent,
+                      body: Stack(
+                        children: [
+                          ModalBarrier(
+                            onDismiss: () {
+                              AppNotify.dismissNotify();
+                              if (value.$3 != null) {
+                                value.$3!();
+                              }
+                            },
+                          ),
+                          Center(child: Text(value.$2 ?? 'Success')),
+                        ],
+                      ),
+                    )
                   : Container(
                       color: const Color.fromRGBO(0, 0, 0, 0.6),
                       height: MediaQuery.of(context).size.height,

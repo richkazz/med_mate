@@ -96,6 +96,9 @@ class $AssetsIconsGen {
   SvgGenImage get logOutIcon =>
       const SvgGenImage('assets/icons/log_out_icon.svg');
 
+  /// File path: assets/icons/logout-02.svg
+  SvgGenImage get logout02 => const SvgGenImage('assets/icons/logout-02.svg');
+
   /// File path: assets/icons/mail-02.svg
   SvgGenImage get mail02 => const SvgGenImage('assets/icons/mail-02.svg');
 
@@ -184,6 +187,7 @@ class $AssetsIconsGen {
         homeLine,
         logInIcon,
         logOutIcon,
+        logout02,
         mail02,
         messageQuestion,
         notification02,
@@ -239,6 +243,9 @@ class $AssetsImagesGen {
   SvgGenImage get continueWithTwitter =>
       const SvgGenImage('assets/images/continue_with_twitter.svg');
 
+  /// File path: assets/images/fpd.png
+  AssetGenImage get fpd => const AssetGenImage('assets/images/fpd.png');
+
   /// File path: assets/images/landing page to do icon.png
   AssetGenImage get landingPageToDoIcon =>
       const AssetGenImage('assets/images/landing page to do icon.png');
@@ -257,6 +264,7 @@ class $AssetsImagesGen {
         continueWithFacebook,
         continueWithGoogle,
         continueWithTwitter,
+        fpd,
         landingPageToDoIcon,
         navbarImage
       ];

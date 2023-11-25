@@ -42,16 +42,42 @@ class AppButton extends StatelessWidget {
     double? elevation,
     TextStyle? textStyle,
     double? borderRadius,
+    Color? color,
   }) : this._(
           key: key,
           onPressed: onPressed,
           child: child,
           borderRadius: borderRadius ?? 0,
-          buttonColor: AppColors.enabledButtonBackgroundColor,
+          buttonColor: color ?? AppColors.enabledButtonBackgroundColor,
           elevation: elevation,
           foregroundColor: AppColors.white,
           disabledForegroundColor: AppColors.white,
           disabledButtonColor: AppColors.disabledButtonBackgroundColor,
+          textStyle: textStyle,
+          padding: const EdgeInsets.only(
+            bottom: AppSpacing.xs,
+            top: AppSpacing.xs,
+          ),
+        );
+
+  /// filled dark blue button
+  const AppButton.smallOutlineWithWhiteBorderTransparent({
+    required Widget child,
+    Key? key,
+    VoidCallback? onPressed,
+    double? elevation,
+    TextStyle? textStyle,
+  }) : this._(
+          key: key,
+          onPressed: onPressed,
+          child: child,
+          borderRadius: 25,
+          borderSide: const BorderSide(color: AppColors.white),
+          buttonColor: AppColors.transparent,
+          elevation: elevation,
+          foregroundColor: AppColors.transparent,
+          disabledForegroundColor: AppColors.transparent,
+          disabledButtonColor: AppColors.transparent,
           textStyle: textStyle,
           padding: const EdgeInsets.only(
             bottom: AppSpacing.xs,

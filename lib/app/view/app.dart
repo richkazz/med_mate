@@ -12,17 +12,32 @@ class App extends StatelessWidget {
   const App({
     required User user,
     required this.drugRepository,
+    required this.networkInfoImpl,
+    required this.httpService,
+    required this.authenticationRepository,
     super.key,
   }) : _user = user;
 
   final User _user;
   final DrugRepository drugRepository;
+  final NetworkInfoImpl networkInfoImpl;
+  final HttpService httpService;
+  final AuthenticationRepository authenticationRepository;
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<DrugRepository>(
           create: (context) => drugRepository,
+        ),
+        RepositoryProvider<NetworkInfoImpl>(
+          create: (context) => networkInfoImpl,
+        ),
+        RepositoryProvider<HttpService>(
+          create: (context) => httpService,
+        ),
+        RepositoryProvider<AuthenticationRepository>(
+          create: (context) => authenticationRepository,
         ),
       ],
       child: MultiBlocProvider(
@@ -53,11 +68,16 @@ class AppView extends StatelessWidget {
       darkTheme: const AppDarkTheme().themeData,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: AuthenticatedUserListener(
-        child: FlowBuilder<AppStatus>(
-          state: context.select((AppBloc bloc) => bloc.state.status),
-          onGeneratePages: onGenerateAppViewPages,
-        ),
+      home: Stack(
+        children: [
+          AuthenticatedUserListener(
+            child: FlowBuilder<AppStatus>(
+              state: context.select((AppBloc bloc) => bloc.state.status),
+              onGeneratePages: onGenerateAppViewPages,
+            ),
+          ),
+          const LoadingContent(),
+        ],
       ),
     );
   }

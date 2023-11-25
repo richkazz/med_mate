@@ -243,6 +243,126 @@
     "description": "Text indicating the action to delete a doctor",
     "type": "text",
     "placeholders": {}
-  }
+  },
+"medMate": "MedMate",
+"@medMate": {
+  "description": "Text displayed for the MedMate application or service.",
+  "type": "text",
+  "placeholders": {}
+},
+"oneStepToAdherence": "Your one step to improved medical adherence",
+"@oneStepToAdherence": {
+  "description": "Text displayed to highlight the significance of taking one step for improved medical adherence.",
+  "type": "text",
+  "placeholders": {}
+},
+"signUp": "Sign Up",
+"@signUp": {
+  "description": "Text displayed for the sign-up button or link.",
+  "type": "text",
+  "placeholders": {}
+},
+"logIn": "Log In",
+"@logIn": {
+  "description": "Text displayed for the log-in button or link.",
+  "type": "text",
+  "placeholders": {}
+},
+"firstName": "First Name",
+"@firstName": {
+  "description": "Text label for the input field where users enter their first name.",
+  "type": "text",
+  "placeholders": {}
+},
+"lastName": "Last Name",
+"@lastName": {
+  "description": "Text label for the input field where users enter their last name.",
+  "type": "text",
+  "placeholders": {}
+},
+"email": "Email",
+"@email": {
+  "description": "Text label for the input field where users enter their email address.",
+  "type": "text",
+  "placeholders": {}
+},
+"password": "Password",
+"@password": {
+  "description": "Text label for the input field where users enter their password.",
+  "type": "text",
+  "placeholders": {}
+},
+"confirmPassword": "Confirm Password",
+"@confirmPassword": {
+  "description": "Text label for the input field where users confirm their password.",
+  "type": "text",
+  "placeholders": {}
+},
+"phoneNumberOptional": "Phone Number (Optional)",
+"@phoneNumberOptional": {
+  "description": "Text label for the input field where users enter their phone number, and it is optional.",
+  "type": "text",
+  "placeholders": {}
+},
+"alreadyHaveAccount": "Already have an account? Log In",
+"@alreadyHaveAccount": {
+  "description": "Text displayed to prompt users who already have an account to log in.",
+  "type": "text",
+  "placeholders": {}
+},
+"createAccount": "Create Account",
+"@createAccount": {
+  "description": "Text displayed for the button or link to initiate the account creation process.",
+  "type": "text",
+  "placeholders": {}
+},
+"verifyEmailAddress": "Verify Email Address",
+"@verifyEmailAddress": {
+  "description": "Text displayed to instruct users to verify their email address.",
+  "type": "text",
+  "placeholders": {}
+},
+"verifyEmailInstruction": "To verify your email address, we’ve sent a One Time Password (OTP) to",
+"@verifyEmailInstruction": {
+  "description": "Text displayed as an instruction to notify users that an OTP has been sent to verify their email address.",
+  "type": "text",
+  "placeholders": {}
+},
+"enterOTP": "Enter OTP",
+"@enterOTP": {
+  "description": "Text displayed as a prompt for users to enter the One Time Password (OTP).",
+  "type": "text",
+  "placeholders": {}
+},
+"changeEmailLink": "Not your email address? Change",
+"@changeEmailLink": {
+  "description": "Text displayed as a link or button for users to change the entered email address.",
+  "type": "text",
+  "placeholders": {}
+},
+"noAccountSignUp": "Don’t have an account? Sign Up",
+"@noAccountSignUp": {
+  "description": "Text displayed to prompt users who do not have an account to navigate to the sign-up page.",
+  "type": "text",
+  "placeholders": {}
+},
+"continueText": "Continue",
+"@continueText": {
+  "description": "Text displayed for a button or link prompting users to continue with an action or process.",
+  "type": "text",
+  "placeholders": {}
+},
+"createYourAccount": "Create your account",
+"@createYourAccount": {
+  "description": "Text displayed as an instruction to users to create their account.",
+  "type": "text",
+  "placeholders": {}
+},
+"passwordErrorText": "Your password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number.",
+"@passwordErrorText": {
+  "description": "Error text for invalid password",
+  "type": "text",
+  "placeholders": {}
+}
 
 }
