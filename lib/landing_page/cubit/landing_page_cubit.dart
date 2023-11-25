@@ -62,7 +62,6 @@ class LandingPageCubit extends Cubit<LandingPageState> {
     DrugToTakeDailyStatus status,
     int index,
   ) async {
-    await _drugRepository.updateDrug(drug, 0);
     // Find the index of the drug in the current state
     final indexOfDrug = state.drugs.indexWhere((element) {
       return element.isEqual(drug);
@@ -89,7 +88,7 @@ class LandingPageCubit extends Cubit<LandingPageState> {
     // Create a new list of drugs with the updated drug
     final newListOfDrug = [...state.drugs];
     newListOfDrug[indexOfDrug] = newDrug;
-
+    await _drugRepository.updateDrug(newDrug, 0);
     // Emit a new state with the updated list of drugs
     emit(state.copyWith(drugs: newListOfDrug));
 

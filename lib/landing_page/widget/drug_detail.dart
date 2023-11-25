@@ -62,7 +62,7 @@ class DrugDetailItem extends StatelessWidget {
     final record = (
       drug.doseTimeAndCount[indexOfDosageTime]
           .drugToTakeDailyStatusRecordForToday,
-      drug.doseTimeAndCount.first.dosageTimeToBeTaken
+      drug.doseTimeAndCount[indexOfDosageTime].dosageTimeToBeTaken
     );
     return ConstrainedBox(
       constraints: const BoxConstraints(
@@ -162,7 +162,7 @@ class DrugDetailItemContent extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'Dose: ${drug.doseTimeAndCount.first.dosageCount}',
+                    'Dose: ${drug.doseTimeAndCount[indexOfDosageTime].dosageCount}',
                     style: theme.textTheme.bodySmall!
                         .copyWith(fontWeight: FontWeight.w300),
                   ),
@@ -180,7 +180,8 @@ class DrugDetailItemContent extends StatelessWidget {
                     height: AppSpacing.md,
                   ),
                   Text(
-                    drug.doseTimeAndCount.first.dosageTimeToBeTaken.formatTime,
+                    drug.doseTimeAndCount[indexOfDosageTime].dosageTimeToBeTaken
+                        .formatTime,
                     style: theme.textTheme.bodySmall!.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -313,7 +314,7 @@ class DrugDetailPopUp extends StatelessWidget {
               ),
               Text(
                 'Scheduled for '
-                '${drug.doseTimeAndCount.first.dosageTimeToBeTaken.formatTime}',
+                '${drug.doseTimeAndCount[indexOfDosageTime].dosageTimeToBeTaken.formatTime}',
                 softWrap: true,
                 style: theme.textTheme.labelSmall!.copyWith(
                   fontWeight: FontWeight.w400,
@@ -397,7 +398,7 @@ class DrugDetailController {
         );
       },
       actionStatement: 'You are about to skip'
-          ' ${drug.doseTimeAndCount.first.dosageCount} '
+          ' ${drug.doseTimeAndCount[indexOfDosageTime].dosageCount} '
           'dose of ${drug.name}',
       icon: IconWithRoundedBackground(
         color: AppColors.icon2BackgroundColor,
@@ -414,7 +415,7 @@ class DrugDetailController {
       context,
       theme,
       actionStatement: 'You are about to take'
-          ' ${drug.doseTimeAndCount.first.dosageCount} '
+          ' ${drug.doseTimeAndCount[indexOfDosageTime].dosageCount} '
           'dose of ${drug.name}',
       onCancelClicked: () {},
       onConfirmClicked: () {

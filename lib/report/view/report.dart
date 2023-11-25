@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:app_ui/app_ui.dart';
+import 'package:domain/domain.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:med_mate/l10n/l10n.dart';
 import 'package:med_mate/report/report.dart';
+import 'package:med_mate/report/widget/widget.dart';
 import 'package:med_mate/widgets/widget.dart';
 
 class ReportPage extends StatelessWidget {
@@ -20,6 +24,7 @@ class ReportView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -40,53 +45,73 @@ class ReportView extends StatelessWidget {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(
-          AppSpacing.md,
-          AppSpacing.xs,
-          AppSpacing.md,
-          AppSpacing.md,
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Align(
-                alignment: Alignment.topRight,
-                child: AppButton.smallTransparentWithDullBorder(
-                  onPressed: () async {
-                    await _showModalBottomSheetForReport(
-                      context,
-                      context.read<ReportCubit>(),
-                    );
-                  },
-                  child: BlocBuilder<ReportCubit, ReportState>(
-                    buildWhen: (previous, current) {
-                      return current
-                              .reportEnum.isReportForChooseASpecificTime ||
-                          current.reportEnum.isReportForLastMonth ||
-                          current.reportEnum.isReportForThisMonth;
-                    },
-                    builder: (context, state) {
-                      final text = switch (state.reportEnum) {
-                        ReportEnum.reportForThisMonth => l10n.thisMonth,
-                        ReportEnum.reportForLastMonth => l10n.lastMonth,
-                        ReportEnum.reportForChooseASpecificTime => 'Custom',
-                        _ => l10n.thisMonth
-                      };
-                      return Text(
-                        text,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall!
-                            .copyWith(fontWeight: FontWeight.w500),
-                      );
-                    },
-                  ),
-                ),
-              ),
-              Assets.images.medicineCuate1.image(package: 'app_ui'),
-            ],
+      body: Column(
+        children: [
+          Padding(
+            padding:
+                const EdgeInsets.fromLTRB(0, AppSpacing.xs, AppSpacing.md, 0),
+            child: ReportDateRangeCallButtonSheetButton(l10n: l10n),
           ),
+          const SizedBox(
+            height: AppSpacing.md,
+          ),
+          BlocSelector<ReportCubit, ReportState, List<ReportData>>(
+            selector: (state) => state.reportDataList,
+            builder: (context, reportDataList) {
+              return switch (reportDataList.isEmpty) {
+                true => const NoReportAvailable(),
+                false => ReportDataAvailable(
+                    reportDataList: reportDataList,
+                  ),
+              };
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ReportDateRangeCallButtonSheetButton extends StatelessWidget {
+  const ReportDateRangeCallButtonSheetButton({
+    required this.l10n,
+    super.key,
+  });
+
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topRight,
+      child: AppButton.smallTransparentWithDullBorder(
+        onPressed: () async {
+          await _showModalBottomSheetForReport(
+            context,
+            context.read<ReportCubit>(),
+          );
+        },
+        child: BlocBuilder<ReportCubit, ReportState>(
+          buildWhen: (previous, current) {
+            return current.reportEnum.isReportForChooseASpecificTime ||
+                current.reportEnum.isReportForLastMonth ||
+                current.reportEnum.isReportForThisMonth;
+          },
+          builder: (context, state) {
+            final text = switch (state.reportEnum) {
+              ReportEnum.reportForThisMonth => l10n.thisMonth,
+              ReportEnum.reportForLastMonth => l10n.lastMonth,
+              ReportEnum.reportForChooseASpecificTime => 'Custom',
+              _ => l10n.thisMonth
+            };
+            return Text(
+              text,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall!
+                  .copyWith(fontWeight: FontWeight.w500),
+            );
+          },
         ),
       ),
     );
@@ -164,7 +189,7 @@ class ReportModalBottomSheetContent extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
-                reportCubit.showReport(ReportEnum.reportForThisMonth);
+                reportCubit.showReportThisMonth();
                 Navigator.pop(context);
               },
               child: Text(
@@ -183,7 +208,7 @@ class ReportModalBottomSheetContent extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
-                reportCubit.showReport(ReportEnum.reportForLastMonth);
+                reportCubit.showReportLastMonth();
                 Navigator.pop(context);
               },
               child: Text(
@@ -204,11 +229,7 @@ class ReportModalBottomSheetContent extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    reportCubit
-                        .showReport(ReportEnum.reportForChooseASpecificTime);
-                  },
+                  onPressed: null,
                   child: Text(
                     context.l10n.chooseSpecificTime,
                     style: Theme.of(context).textTheme.labelSmall!.copyWith(
@@ -217,7 +238,19 @@ class ReportModalBottomSheetContent extends StatelessWidget {
                   ),
                 ),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    Navigator.pop(context);
+                    final dateTimeRange = await showDateRangePicker(
+                      context: context,
+                      firstDate: DateTime(2023),
+                      lastDate: DateTime.now(),
+                    );
+                    if (dateTimeRange.isNotNull) {
+                      unawaited(
+                        reportCubit.showReportCustomRange(dateTimeRange!),
+                      );
+                    }
+                  },
                   icon: Assets.icons.calendar03
                       .svg(package: 'app_ui', width: 15, height: 15),
                 ),
@@ -262,20 +295,6 @@ class AppButtonText extends StatelessWidget {
             color: color,
             fontWeight: FontWeight.w400,
           ),
-    );
-  }
-}
-
-class DrawHorizontalLine extends StatelessWidget {
-  const DrawHorizontalLine({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 1,
-      color: AppColors.dividerColor,
     );
   }
 }

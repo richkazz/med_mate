@@ -2,10 +2,9 @@ import 'package:app_ui/app_ui.dart';
 import 'package:domain/domain.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:med_mate/l10n/l10n.dart';
 import 'package:med_mate/landing_page/cubit/landing_page_cubit.dart';
 import 'package:med_mate/landing_page/widget/widgets.dart';
+import 'package:med_mate/widgets/widget.dart';
 
 class LandingPage extends StatelessWidget {
   const LandingPage({super.key});
@@ -87,7 +86,7 @@ class LandingPage extends StatelessWidget {
             const SizedBox(
               height: AppSpacing.md,
             ),
-            AddMedicationButton(l10n: context.l10n),
+            const AddMedicationButton(),
             const SizedBox(
               height: AppSpacing.lg,
             ),

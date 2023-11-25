@@ -1,5 +1,7 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:med_mate/add_med/add_med.dart';
+import 'package:med_mate/l10n/l10n.dart';
 
 class IconWithRoundedBackground extends StatelessWidget {
   const IconWithRoundedBackground({
@@ -15,6 +17,20 @@ class IconWithRoundedBackground extends StatelessWidget {
       backgroundColor: color,
       radius: 25,
       child: icon,
+    );
+  }
+}
+
+class DrawHorizontalLine extends StatelessWidget {
+  const DrawHorizontalLine({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 1,
+      color: AppColors.dividerColor,
     );
   }
 }
@@ -126,6 +142,43 @@ class DecoratedBoxWithColorBorderContent extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class AddMedicationButton extends StatelessWidget {
+  const AddMedicationButton({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.md,
+        0,
+        AppSpacing.md,
+        AppSpacing.md,
+      ),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 250, maxHeight: 40),
+        child: AppButton.primary(
+          onPressed: () => Navigator.push(context, AddMedication.route()),
+          borderRadius: 30,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.add,
+              ),
+              Text(
+                context.l10n.addMedication,
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

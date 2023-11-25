@@ -6,6 +6,7 @@ import 'package:med_mate/home/home.dart';
 import 'package:med_mate/l10n/l10n.dart';
 import 'package:med_mate/landing_page/landing_page.dart';
 import 'package:med_mate/report/view/report.dart';
+import 'package:med_mate/settings/setting.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -32,7 +33,7 @@ class HomeView extends StatelessWidget {
       child: Scaffold(
         body: IndexedStack(
           index: selectedTab,
-          children: const [LandingPage(), ReportPage()],
+          children: const [LandingPage(), ReportPage(), SettingPage()],
         ),
         bottomNavigationBar: BottomNavBar(
           currentIndex: selectedTab,
@@ -56,6 +57,11 @@ class BottomNavBar extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        if (currentIndex == 1)
+          Container(
+            color: AppColors.white,
+            height: AppSpacing.md,
+          ),
         SizedBox(
           height: 60,
           child: Padding(
