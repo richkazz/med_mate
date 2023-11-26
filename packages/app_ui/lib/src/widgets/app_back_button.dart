@@ -45,11 +45,7 @@ class AppBackButton extends StatelessWidget {
       child: Center(
         child: IconButton(
           onPressed: onPressed ?? () => Navigator.of(context).pop(),
-          icon: const Icon(
-            Icons.arrow_back,
-            color: AppColors.black,
-            size: 20,
-          ),
+          icon: Assets.icons.arrowDown02Sharp.svg(package: 'app_ui'),
         ),
       ),
     );

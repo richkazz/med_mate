@@ -66,7 +66,7 @@ class DrugDetailItem extends StatelessWidget {
     );
     return ConstrainedBox(
       constraints: const BoxConstraints(
-        minWidth: 90,
+        minWidth: 100,
       ),
       child: InkWell(
         onTap: () =>
@@ -153,7 +153,7 @@ class DrugDetailItemContent extends StatelessWidget {
                 children: [
                   Assets.icons.pill.svg(package: 'app_ui'),
                   SizedBox(
-                    width: 90,
+                    width: 100,
                     child: Text(
                       drug.name,
                       softWrap: true,
@@ -167,7 +167,7 @@ class DrugDetailItemContent extends StatelessWidget {
                         .copyWith(fontWeight: FontWeight.w300),
                   ),
                   SizedBox(
-                    width: 90,
+                    width: 100,
                     child: Text(
                       status,
                       style: theme.textTheme.bodySmall!.copyWith(

@@ -187,7 +187,14 @@ class LoadingContent extends StatelessWidget {
                           }
                         },
                       ),
-                      Center(child: Text(value.$2 ?? 'error')),
+                      Center(
+                          child: Text(
+                        value.$2 ?? 'error',
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleSmall!
+                            .copyWith(color: AppColors.red),
+                      )),
                     ],
                   ),
                 )

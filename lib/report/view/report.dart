@@ -55,16 +55,18 @@ class ReportView extends StatelessWidget {
           const SizedBox(
             height: AppSpacing.md,
           ),
-          BlocSelector<ReportCubit, ReportState, List<ReportData>>(
-            selector: (state) => state.reportDataList,
-            builder: (context, reportDataList) {
-              return switch (reportDataList.isEmpty) {
-                true => const NoReportAvailable(),
-                false => ReportDataAvailable(
-                    reportDataList: reportDataList,
-                  ),
-              };
-            },
+          Expanded(
+            child: BlocSelector<ReportCubit, ReportState, List<ReportData>>(
+              selector: (state) => state.reportDataList,
+              builder: (context, reportDataList) {
+                return switch (reportDataList.isEmpty) {
+                  true => const NoReportAvailable(),
+                  false => ReportDataAvailable(
+                      reportDataList: reportDataList,
+                    ),
+                };
+              },
+            ),
           ),
         ],
       ),

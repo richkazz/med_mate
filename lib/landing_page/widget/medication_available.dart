@@ -28,28 +28,25 @@ class MedicationAvailable extends StatelessWidget {
         BlocSelector<LandingPageCubit, LandingPageState, List<Drug>>(
           selector: (state) => state.drugs,
           builder: (context, state) {
-            return Padding(
-              padding: const EdgeInsets.all(AppSpacing.sm),
-              child: Wrap(
-                spacing: AppSpacing.md,
-                runSpacing: AppSpacing.md,
-                children: [
-                  ...context.read<LandingPageCubit>().state.drugs.map(
-                        (drug) => Wrap(
-                          spacing: AppSpacing.md,
-                          runSpacing: AppSpacing.md,
-                          children: List.generate(
-                            drug.doseTimeAndCount.length,
-                            (index) => DrugDetailInherited(
-                              drug: drug,
-                              indexOfDrugDosageTime: index,
-                              child: DrugDetailItem(theme: theme),
-                            ),
+            return Wrap(
+              spacing: AppSpacing.md,
+              runSpacing: AppSpacing.md,
+              children: [
+                ...context.read<LandingPageCubit>().state.drugs.map(
+                      (drug) => Wrap(
+                        spacing: AppSpacing.md,
+                        runSpacing: AppSpacing.md,
+                        children: List.generate(
+                          drug.doseTimeAndCount.length,
+                          (index) => DrugDetailInherited(
+                            drug: drug,
+                            indexOfDrugDosageTime: index,
+                            child: DrugDetailItem(theme: theme),
                           ),
                         ),
                       ),
-                ],
-              ),
+                    ),
+              ],
             );
           },
         ),

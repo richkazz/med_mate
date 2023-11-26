@@ -1,5 +1,6 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:med_mate/login/login/login.dart';
 import 'package:med_mate/signup/sign_up.dart';
 import 'package:med_mate/l10n/l10n.dart';
 import 'package:med_mate/widgets/widget.dart';
@@ -95,7 +96,15 @@ class OnboardingView extends StatelessWidget {
                     ),
                     OnboardingButtonWrapper(
                       child: AppButton.smallOutlineWithWhiteBorderTransparent(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            SlidePageRoute<LoginPage>(
+                              page: const LoginPage(
+                                key: ValueKey<String>('LoginPage'),
+                              ),
+                            ),
+                          );
+                        },
                         child: AppButtonText(
                           text: l10n.logIn,
                           color: AppColors.white,

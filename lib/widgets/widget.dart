@@ -225,3 +225,37 @@ class CirclePainter extends CustomPainter {
     return false;
   }
 }
+
+class AuthHelperActionText extends StatelessWidget {
+  const AuthHelperActionText({
+    required this.question,
+    required this.action,
+    required this.onPressed,
+    super.key,
+  });
+  final String question;
+  final String action;
+  final VoidCallback onPressed;
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: () {},
+      child: RichText(
+        text: TextSpan(
+          style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                color: AppColors.black,
+              ),
+          text: '$question ',
+          children: [
+            TextSpan(
+              style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                    color: AppColors.primaryColor,
+                  ),
+              text: action,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

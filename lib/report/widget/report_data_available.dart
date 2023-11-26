@@ -9,33 +9,31 @@ class ReportDataAvailable extends StatelessWidget {
   final List<ReportData> reportDataList;
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: ListView.separated(
-        itemBuilder: (context, index) {
-          if (index == reportDataList.length - 1) {
-            return Column(
-              children: [
-                DrugReportItem(
-                  reportData: reportDataList[index],
-                ),
-                const SizedBox(
-                  height: AppSpacing.xlg,
-                ),
-                const AddMedicationButton(),
-              ],
-            );
-          }
-          return DrugReportItem(
-            reportData: reportDataList[index],
+    return ListView.separated(
+      itemBuilder: (context, index) {
+        if (index == reportDataList.length - 1) {
+          return Column(
+            children: [
+              DrugReportItem(
+                reportData: reportDataList[index],
+              ),
+              const SizedBox(
+                height: AppSpacing.xlg,
+              ),
+              const AddMedicationButton(),
+            ],
           );
-        },
-        itemCount: reportDataList.length,
-        separatorBuilder: (context, index) {
-          return const SizedBox(
-            height: AppSpacing.md,
-          );
-        },
-      ),
+        }
+        return DrugReportItem(
+          reportData: reportDataList[index],
+        );
+      },
+      itemCount: reportDataList.length,
+      separatorBuilder: (context, index) {
+        return const SizedBox(
+          height: AppSpacing.md,
+        );
+      },
     );
   }
 }

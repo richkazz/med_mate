@@ -45,6 +45,7 @@ class App extends StatelessWidget {
           BlocProvider(
             create: (_) => AppBloc(
               user: _user,
+              authenticationRepository: authenticationRepository,
             )..add(const AppOpened()),
           ),
           BlocProvider(

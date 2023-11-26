@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:med_mate/application/application.dart';
 import 'package:med_mate/l10n/l10n.dart';
 import 'package:med_mate/signup/cubit/sign_up_cubit.dart';
+import 'package:med_mate/util/helper.dart';
 import 'package:med_mate/widgets/widget.dart';
 
 class SignUpPage extends StatelessWidget {
@@ -37,7 +38,6 @@ class SignUpView extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.md),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -64,6 +64,14 @@ class SignUpView extends StatelessWidget {
                   ],
                 ),
                 const TextFormFieldS(),
+                const SizedBox(
+                  height: AppSpacing.xs,
+                ),
+                AuthHelperActionText(
+                  action: 'Log In',
+                  question: 'Already have an account?',
+                  onPressed: () {},
+                ),
               ],
             ),
           ),
@@ -142,7 +150,7 @@ class _TextFormFieldState extends State<TextFormFieldS> {
                   textInputType: TextInputType.text,
                   controller: firstNameController,
                   validator: (val) {
-                    return _validateName(val, l10n.firstName);
+                    return validateName(val, l10n.firstName);
                   },
                   title: l10n.firstName,
                 ),
@@ -155,7 +163,7 @@ class _TextFormFieldState extends State<TextFormFieldS> {
                   textInputType: TextInputType.text,
                   controller: lastNameController,
                   validator: (val) {
-                    return _validateName(val, l10n.lastName);
+                    return validateName(val, l10n.lastName);
                   },
                   title: l10n.lastName,
                 ),
@@ -166,7 +174,7 @@ class _TextFormFieldState extends State<TextFormFieldS> {
             textInputType: TextInputType.emailAddress,
             controller: emailController,
             validator: (val) {
-              return _validateEmail(val, l10n.email);
+              return validateEmail(val, l10n.email);
             },
             title: l10n.email,
           ),
@@ -175,7 +183,7 @@ class _TextFormFieldState extends State<TextFormFieldS> {
             controller: passwordController,
             obscureText: true,
             validator: (val) {
-              return _validatePassword(val, l10n.passwordErrorText);
+              return validatePassword(val, l10n.passwordErrorText);
             },
             title: l10n.password,
           ),
@@ -184,7 +192,7 @@ class _TextFormFieldState extends State<TextFormFieldS> {
             controller: confirmPasswordController,
             obscureText: true,
             validator: (val) {
-              return _validateConfirmPassword(
+              return validateConfirmPassword(
                 passwordController.text,
                 confirmPasswordController.text,
               );
@@ -216,52 +224,7 @@ class _TextFormFieldState extends State<TextFormFieldS> {
       ),
     );
   }
-
-  String? _validateName(String? val, String name) {
-    if (val.isNullOrWhiteSpace || !nameRegex.hasMatch(val!)) {
-      return '$name not valid';
-    }
-    return null;
-  }
-
-  String? _validateEmail(String? val, String name) {
-    if (val.isNullOrWhiteSpace || !emailRegex.hasMatch(val!)) {
-      return '$name not valid';
-    }
-    return null;
-  }
-
-  String? _validatePassword(String? val, String errorText) {
-    if (val.isNullOrWhiteSpace || !passwordRegex.hasMatch(val!)) {
-      return 'Password must:\n- Be at least 8 characters long\n- Contain at'
-          ' least one uppercase letter\n- Contain at least one '
-          'lowercase letter\n-'
-          ' Contain at least one digit\n- Contain at least one'
-          ' special character'
-          r' (!@#$%^&*(),.?":{}|<>)';
-    }
-    return null;
-  }
-
-  String? _validateConfirmPassword(String? password, String? confirmPassword) {
-    if (password.isNullOrWhiteSpace ||
-        confirmPassword.isNullOrWhiteSpace ||
-        password != confirmPassword) {
-      return 'Confirm password must match the password';
-    }
-    return null;
-  }
 }
-
-RegExp passwordRegex = RegExp(
-  r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#$%^&*(),.?":{}|<>]).{8,}$',
-);
-
-RegExp nameRegex = RegExp(r'^[a-zA-Z]+(?: +[a-zA-Z]+)*$');
-RegExp emailRegex = RegExp(
-  r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-  caseSensitive: false,
-);
 
 typedef Validator = String? Function(String?);
 

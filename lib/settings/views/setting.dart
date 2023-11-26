@@ -1,6 +1,9 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:med_mate/app/app.dart';
 import 'package:med_mate/doctor/doctor.dart';
+import 'package:med_mate/help/help.dart';
 import 'package:med_mate/l10n/l10n.dart';
 import 'package:med_mate/widgets/widget.dart';
 
@@ -85,7 +88,13 @@ class GeneralSettingSection extends StatelessWidget {
                   actionText: l10n.doctors,
                   icon: Assets.icons.stethoscope.svg(package: 'app_ui'),
                   onPressed: () {
-                    Navigator.push(context, DoctorPage.route());
+                    Navigator.of(context).push(
+                      SlidePageRoute<DoctorPage>(
+                        page: const DoctorPage(
+                          key: ValueKey<String>('DoctorPage'),
+                        ),
+                      ),
+                    );
                   },
                 ),
                 const SizedBox(
@@ -94,7 +103,31 @@ class GeneralSettingSection extends StatelessWidget {
                 GeneralSettingActionItem(
                   actionText: l10n.helpAndSupport,
                   icon: Assets.icons.messageQuestion.svg(package: 'app_ui'),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      SlidePageRoute<HelpPage>(
+                        page: const HelpPage(
+                          key: ValueKey<String>('HelpPage'),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(
+                  height: AppSpacing.md,
+                ),
+                GeneralSettingActionItem(
+                  actionText: 'Logout',
+                  icon: Assets.icons.logout02.svg(
+                    package: 'app_ui',
+                    colorFilter: const ColorFilter.mode(
+                      AppColors.red,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  onPressed: () {
+                    context.read<AppBloc>().add(const AppLogoutRequested());
+                  },
                   isDividerVisible: false,
                 ),
               ],
@@ -179,13 +212,13 @@ class ProfilePictureAndNameWithEmailSection extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Text(
-                'Michael Lane',
+                context.read<AppBloc>().state.user.displayName ?? 'Anonymous',
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
                       fontWeight: FontWeight.w500,
                     ),
               ),
               Text(
-                'example@gmail.com',
+                context.read<AppBloc>().state.user.email ?? 'Anonymous',
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.bodySmall!.copyWith(
                       fontWeight: FontWeight.w300,

@@ -363,6 +363,35 @@
   "description": "Error text for invalid password",
   "type": "text",
   "placeholders": {}
+},
+"medMateQuestion": "MedMate?",
+"@medMateQuestion": {
+  "description": "Text displayed as a question or heading, possibly related to the MedMate service or application.",
+  "type": "text",
+  "placeholders": {}
+},
+"whatIs": "What is",
+"@whatIs": {
+  "description": "Generic text used for asking about something.",
+  "type": "text",
+  "placeholders": {}
+},
+"medMateDescription": "MedMate is a digital solution that enables users and patients to be able to track and improve their medical adherence.",
+"@medMateDescription": {
+  "description": "Description of MedMate, a digital solution for medical adherence.",
+  "type": "text",
+  "placeholders": {}
+},
+"medicalProfessionalsAccess": "Do medical professionals have access to your information?",
+"@medicalProfessionalsAccess": {
+  "description": "Question about whether medical professionals can access user information.",
+  "type": "text",
+  "placeholders": {}
+},
+"medMateDataControlDescription": "MedMate gives the users full control over their data, as medical professionals have to request access from the user in order to gain access to the data.",
+"@medMateDataControlDescription": {
+  "description": "Description of how MedMate provides users control over their data and requires medical professionals to request access.",
+  "type": "text",
+  "placeholders": {}
 }
-
 }

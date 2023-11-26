@@ -11,6 +11,7 @@ List<Page<dynamic>> onGenerateAppViewPages(
     case AppStatus.onboardingRequired:
       return [OnboardingPage.page()];
     case AppStatus.unauthenticated:
+      return [OnboardingPage.page()];
     case AppStatus.authenticated:
       return [HomePage.page()];
   }

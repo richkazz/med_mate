@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:domain/domain.dart';
 import 'package:equatable/equatable.dart';
+import 'package:med_mate/application/application.dart';
 
 part 'app_event.dart';
 part 'app_state.dart';
@@ -10,7 +11,9 @@ part 'app_state.dart';
 class AppBloc extends Bloc<AppEvent, AppState> {
   AppBloc({
     required User user,
-  }) : super(
+    required AuthenticationRepository authenticationRepository,
+  })  : _authenticationRepository = authenticationRepository,
+        super(
           user == User.anonymous
               ? AppState.unauthenticated()
               : AppState.authenticated(user),
@@ -20,9 +23,10 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     on<AppLogoutRequested>(_onLogoutRequested);
     on<AppOpened>(_onAppOpened);
 
-    //_userSubscription = _userRepository.user.listen(_userChanged);
+    _userSubscription =
+        _authenticationRepository.userStream.listen(_userChanged);
   }
-
+  final AuthenticationRepository _authenticationRepository;
   late StreamSubscription<User> _userSubscription;
 
   void _userChanged(User user) => add(AppUserChanged(user));
@@ -58,7 +62,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     // the user should not receive any notifications when logged out.
     //unawaited(_notificationsRepository.toggleNotifications(enable: false));
 
-    //unawaited(_userRepository.logOut());
+    unawaited(_authenticationRepository.signOut());
   }
 
   Future<void> _onAppOpened(AppOpened event, Emitter<AppState> emit) async {
