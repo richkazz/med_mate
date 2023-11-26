@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:med_mate/application/application.dart';
 import 'package:med_mate/l10n/l10n.dart';
+import 'package:med_mate/login/login/login.dart';
 import 'package:med_mate/signup/cubit/sign_up_cubit.dart';
 import 'package:med_mate/util/helper.dart';
 import 'package:med_mate/widgets/widget.dart';
@@ -70,7 +71,15 @@ class SignUpView extends StatelessWidget {
                 AuthHelperActionText(
                   action: 'Log In',
                   question: 'Already have an account?',
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      SlidePageRoute<LoginPage>(
+                        page: const LoginPage(
+                          key: ValueKey<String>('LoginPage'),
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

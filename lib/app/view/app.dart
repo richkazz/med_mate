@@ -12,6 +12,7 @@ class App extends StatelessWidget {
   const App({
     required User user,
     required this.drugRepository,
+    required this.doctorRepository,
     required this.networkInfoImpl,
     required this.httpService,
     required this.authenticationRepository,
@@ -20,6 +21,7 @@ class App extends StatelessWidget {
 
   final User _user;
   final DrugRepository drugRepository;
+  final DoctorRepository doctorRepository;
   final NetworkInfoImpl networkInfoImpl;
   final HttpService httpService;
   final AuthenticationRepository authenticationRepository;
@@ -38,6 +40,9 @@ class App extends StatelessWidget {
         ),
         RepositoryProvider<AuthenticationRepository>(
           create: (context) => authenticationRepository,
+        ),
+        RepositoryProvider<DoctorRepository>(
+          create: (context) => doctorRepository,
         ),
       ],
       child: MultiBlocProvider(

@@ -6,6 +6,7 @@ import 'package:med_mate/app/app.dart';
 import 'package:med_mate/application/application.dart';
 import 'package:med_mate/l10n/l10n.dart';
 import 'package:med_mate/login/cubit/login_cubit.dart';
+import 'package:med_mate/signup/sign_up.dart';
 import 'package:med_mate/util/helper.dart';
 import 'package:med_mate/widgets/widget.dart';
 
@@ -70,7 +71,15 @@ class LoginView extends StatelessWidget {
                 AuthHelperActionText(
                   action: 'Sign Up',
                   question: "Don't have an account?",
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      SlidePageRoute<SignUpPage>(
+                        page: const SignUpPage(
+                          key: ValueKey<String>('SignUpPage'),
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

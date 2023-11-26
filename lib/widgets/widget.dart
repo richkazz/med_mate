@@ -226,6 +226,40 @@ class CirclePainter extends CustomPainter {
   }
 }
 
+class CustomAppBarWithTitleText extends StatelessWidget
+    implements PreferredSizeWidget {
+  const CustomAppBarWithTitleText({required this.title, super.key});
+  final String title;
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      title: Text(
+        title,
+        style: Theme.of(context).textTheme.titleMedium,
+      ),
+      centerTitle: true,
+      bottom: const PreferredSize(
+        preferredSize: Size.fromHeight(1),
+        child: Divider(
+          color: AppColors.dividerColor,
+        ),
+      ),
+      leading: IconButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        icon: CircleAvatar(
+          backgroundColor: AppColors.textFieldFillColor,
+          child: Assets.icons.arrowDown02Sharp.svg(package: 'app_ui'),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(70);
+}
+
 class AuthHelperActionText extends StatelessWidget {
   const AuthHelperActionText({
     required this.question,
@@ -239,7 +273,7 @@ class AuthHelperActionText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () {},
+      onPressed: onPressed,
       child: RichText(
         text: TextSpan(
           style: Theme.of(context).textTheme.labelSmall!.copyWith(

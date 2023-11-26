@@ -1,5 +1,6 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:med_mate/doctor/view/add_doctor.dart';
 import 'package:med_mate/l10n/l10n.dart';
 import 'package:med_mate/widgets/widget.dart';
 
@@ -21,28 +22,7 @@ class DoctorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          context.l10n.doctors,
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-        centerTitle: true,
-        bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(1),
-          child: Divider(
-            color: AppColors.dividerColor,
-          ),
-        ),
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: CircleAvatar(
-            backgroundColor: AppColors.textFieldFillColor,
-            child: Assets.icons.arrowDown02Sharp.svg(package: 'app_ui'),
-          ),
-        ),
-      ),
+      appBar: CustomAppBarWithTitleText(title: context.l10n.doctors),
       body: SingleChildScrollView(
         child: SizedBox(
           width: MediaQuery.sizeOf(context).width,
@@ -58,7 +38,15 @@ class DoctorView extends StatelessWidget {
                       const BoxConstraints(maxWidth: 250, maxHeight: 37),
                   child: AppButton.primary(
                     borderRadius: 25,
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        SlidePageRoute<AddDoctorPage>(
+                          page: const AddDoctorPage(
+                            key: ValueKey<String>('AddDoctorPage'),
+                          ),
+                        ),
+                      );
+                    },
                     child: AppButtonText(
                       color: AppColors.white,
                       text: context.l10n.addProfessional,

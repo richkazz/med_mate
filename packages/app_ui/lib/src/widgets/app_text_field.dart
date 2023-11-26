@@ -326,10 +326,10 @@ class _AppTextFieldOutlinedState extends State<AppTextFieldOutlined> {
               hintText: widget.hintText,
               labelText: widget.labelText,
               hintStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: !isLightMode
-                        ? const Color.fromRGBO(252, 252, 253, 1)
-                        : AppColors.black,
-                  ),
+                  color: !isLightMode
+                      ? const Color.fromRGBO(252, 252, 253, 1)
+                      : AppColors.fieldBorderColor,
+                  fontSize: 13),
               error: widget.errorText == null
                   ? null
                   : Text(

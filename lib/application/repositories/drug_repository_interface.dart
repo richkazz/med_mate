@@ -1,9 +1,12 @@
 import 'package:domain/domain.dart';
+import 'package:med_mate/application/application.dart';
 
 class DrugRepository {
-  DrugRepository({required ResultService resultService})
-      : _resultService = resultService;
-
+  DrugRepository(
+    this._httpService, {
+    required ResultService resultService,
+  }) : _resultService = resultService;
+  final HttpService _httpService;
   final ResultService _resultService;
   Future<Result<Drug>> createDrug(Drug drug) async {
     globalTestDrugList.add(drug);

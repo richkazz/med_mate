@@ -26,6 +26,7 @@ class AppBlocObserver extends BlocObserver {
 Future<void> bootstrap(
   FutureOr<Widget> Function(
     DrugRepository drugRepository,
+    DoctorRepository doctorRepository,
     NetworkInfoImpl networkInfoImpl,
     HttpService httpService,
     AuthenticationRepository authenticationRepository,
@@ -37,7 +38,6 @@ Future<void> bootstrap(
 
   Bloc.observer = const AppBlocObserver();
   final resultService = ResultService();
-  final drugRepository = DrugRepository(resultService: resultService);
   // Add cross-flavor configuration here
   final dataConnectionChecker = DataConnectionChecker();
   final networkInfo = NetworkInfoImpl(dataConnectionChecker);
@@ -46,7 +46,18 @@ Future<void> bootstrap(
     baseUrl: 'http://medmatebackend2-production.up.railway.app/api/v1/',
     headers: {'Content-Type': 'application/json'},
   );
+  final doctorRepository =
+      DoctorRepository(httpService, resultService: resultService);
+  final drugRepository =
+      DrugRepository(httpService, resultService: resultService);
+
   final authService =
       AuthenticationRepository(httpService, resultService: resultService);
-  runApp(await builder(drugRepository, networkInfo, httpService, authService));
+  runApp(await builder(
+    drugRepository,
+    doctorRepository,
+    networkInfo,
+    httpService,
+    authService,
+  ));
 }
