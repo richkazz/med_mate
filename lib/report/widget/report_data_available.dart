@@ -2,7 +2,6 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:med_mate/report/report.dart';
-import 'package:med_mate/widgets/widget.dart';
 
 class ReportDataAvailable extends StatelessWidget {
   const ReportDataAvailable({required this.reportDataList, super.key});

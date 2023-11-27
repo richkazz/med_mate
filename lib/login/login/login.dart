@@ -2,7 +2,6 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:med_mate/application/application.dart';
-import 'package:med_mate/application/services/notification_service.dart';
 import 'package:med_mate/l10n/l10n.dart';
 import 'package:med_mate/login/cubit/login_cubit.dart';
 import 'package:med_mate/login/widgets/login_bloc_listener.dart';

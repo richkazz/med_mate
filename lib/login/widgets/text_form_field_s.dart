@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:med_mate/l10n/l10n.dart';
 import 'package:med_mate/login/cubit/login_cubit.dart';
-import 'package:med_mate/signup/sign_up.dart';
 import 'package:med_mate/util/helper.dart';
 import 'package:med_mate/widgets/widget.dart';
 

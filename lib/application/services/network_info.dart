@@ -5,10 +5,8 @@ class NetworkInfoImpl {
   NetworkInfoImpl(this.connectionChecker);
   final DataConnectionChecker connectionChecker;
 
-  @override
   Future<bool> get isConnected => connectionChecker.hasConnection;
 
-  @override
   Stream<NetworkConnectionStatus> get onStatusChange =>
       DataConnectionChecker().onStatusChange.map((event) {
         switch (event) {
