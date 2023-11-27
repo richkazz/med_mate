@@ -17,7 +17,7 @@ workflows:
         script: |
           flutter test
         ignore_failure: true
-     - name: Build APK with Flutter
+      - name: Build APK with Flutter
         script: |
           flutter build apk --split-per-abi -t ./lib/main_production.dart
     artifacts:
