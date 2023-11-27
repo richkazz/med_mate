@@ -1,0 +1,34 @@
+workflows:
+  android-workflow:
+    name: Android Workflow
+    instance_type: mac_mini_m1
+    max_build_duration: 120
+    scripts:
+      - name: Set up local.properties
+        script: |
+          echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/android/local.properties"
+      - name: Get Flutter packages
+        script: |
+          flutter packages pub get
+      # - name: Flutter analyze
+      #   script: |
+      #     flutter analyze
+      - name: Flutter unit tests
+        script: |
+          flutter test
+        ignore_failure: true
+     - name: Build APK with Flutter
+        script: |
+          flutter build apk --split-per-abi -t ./lib/main_production.dart
+    artifacts:
+      - build/**/outputs/**/*.aab
+      - build/**/outputs/**/*.apk
+      - build/**/outputs/**/mapping.txt
+      - flutter_drive.log
+    publishing:
+      email:
+        recipients:
+          - edawarekaro@gmail.com
+        notify:
+          success: true # To receive a notification when a build succeeds
+          failure: false # To not receive a notification when a build fails
