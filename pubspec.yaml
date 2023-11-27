@@ -17,7 +17,7 @@ dependencies:
   domain:
     path: packages/domain
   equatable: ^2.0.5
-  flow_builder: ^0.0.9
+  flow_builder: ^0.0.10
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.3
