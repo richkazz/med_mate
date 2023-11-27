@@ -32,6 +32,7 @@ Future<void> bootstrap(
     AuthenticationRepository authenticationRepository,
   ) builder,
 ) async {
+  WidgetsFlutterBinding.ensureInitialized();
   FlutterError.onError = (details) {
     log(details.exceptionAsString(), stackTrace: details.stack);
   };
