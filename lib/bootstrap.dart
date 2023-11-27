@@ -41,9 +41,11 @@ Future<void> bootstrap(
   // Add cross-flavor configuration here
   final dataConnectionChecker = DataConnectionChecker();
   final networkInfo = NetworkInfoImpl(dataConnectionChecker);
+  final tokenValueNotifier = ValueNotifier<String>('');
   final httpService = DioHttpService(
     networkInfo: networkInfo,
-    baseUrl: 'http://medmatebackend2-production.up.railway.app/api/v1/',
+    tokenValueNotifier: tokenValueNotifier,
+    baseUrl: 'https://medmatebackend2-production.up.railway.app/api/v1/',
     headers: {'Content-Type': 'application/json'},
   );
   final doctorRepository =
@@ -51,13 +53,18 @@ Future<void> bootstrap(
   final drugRepository =
       DrugRepository(httpService, resultService: resultService);
 
-  final authService =
-      AuthenticationRepository(httpService, resultService: resultService);
-  runApp(await builder(
-    drugRepository,
-    doctorRepository,
-    networkInfo,
+  final authService = AuthenticationRepository(
     httpService,
-    authService,
-  ));
+    resultService: resultService,
+    tokenValueNotifier: tokenValueNotifier,
+  );
+  runApp(
+    await builder(
+      drugRepository,
+      doctorRepository,
+      networkInfo,
+      httpService,
+      authService,
+    ),
+  );
 }

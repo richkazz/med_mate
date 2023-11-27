@@ -9,6 +9,7 @@ class BackgroundTaskToCheckMissedDrugs {
   BackgroundTaskToCheckMissedDrugs(this.drugs) {
     _timer =
         Timer.periodic(const Duration(minutes: 3), _checkIfDrugTimeHasPassed);
+    _checkIfDrugTimeHasPassed(drugs);
   }
 
   final List<Drug> drugs;

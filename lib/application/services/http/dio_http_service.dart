@@ -2,6 +2,7 @@
 
 import 'package:dio/dio.dart';
 import 'package:domain/domain.dart';
+import 'package:flutter/material.dart';
 import 'package:med_mate/application/services/http/http_service.dart';
 import 'package:med_mate/application/services/network_info.dart';
 
@@ -15,8 +16,9 @@ class DioHttpService implements HttpService {
     required String baseUrl,
     required Map<String, String> headers,
     Dio? dioOverride,
-    bool enableCaching = false,
-  }) : _networkInfo = networkInfo {
+    required ValueNotifier<String> tokenValueNotifier,
+  })  : _networkInfo = networkInfo,
+        _tokenValueNotifier = tokenValueNotifier {
     dio = dioOverride ??
         Dio(
           BaseOptions(
@@ -24,15 +26,26 @@ class DioHttpService implements HttpService {
             headers: headers,
           ),
         );
+    _tokenValueNotifier.addListener(() {
+      if (_tokenValueNotifier.value.isEmpty) {
+        headers.remove('bearer');
+      } else {
+        headers.addAll({'bearer': _tokenValueNotifier.value});
+      }
 
-    if (enableCaching) {
-      //dio.interceptors.add(CacheInterceptor());
-    }
+      dio = Dio(
+        BaseOptions(
+          baseUrl: baseUrl,
+          headers: headers,
+        ),
+      );
+    });
   }
   final NetworkInfoImpl _networkInfo;
+  final ValueNotifier<String> _tokenValueNotifier;
 
   /// The Dio Http client
-  late final Dio dio;
+  Dio? dio;
 
   @override
   Future<dynamic> get(
@@ -47,7 +60,7 @@ class DioHttpService implements HttpService {
       if (!await _networkInfo.isConnected) {
         throw NetWorkFailure();
       }
-      final response = await dio.get(
+      final response = await dio!.get(
         endpoint,
         queryParameters: queryParameters,
         options: HttpServiceResponseType.none == httpServiceResponseType
@@ -86,9 +99,11 @@ class DioHttpService implements HttpService {
     }
     //dio.options.headers = headers;
     final response =
-        await dio.post(endpoint, data: data, queryParameters: queryParameters);
+        await dio!.post(endpoint, data: data, queryParameters: queryParameters);
 
-    if (response.statusCode != 204 && response.statusCode != 200) {
+    if (response.statusCode != 204 &&
+        response.statusCode != 200 &&
+        response.statusCode != 201) {
       throw HttpException(
         title: 'Http Error!',
         statusCode: response.statusCode,
@@ -109,7 +124,7 @@ class DioHttpService implements HttpService {
     }
     //dio.options.headers = Api.headers;
     final response =
-        await dio.delete(endpoint, queryParameters: queryParameters);
+        await dio!.delete(endpoint, queryParameters: queryParameters);
     if (response.statusCode != 204 && response.statusCode != 200) {
       throw HttpException(
         title: 'Http Error!',
@@ -130,7 +145,7 @@ class DioHttpService implements HttpService {
       throw NetWorkFailure();
     }
     final response =
-        await dio.put(endpoint, queryParameters: queryParameters, data: data);
+        await dio!.put(endpoint, queryParameters: queryParameters, data: data);
 
     if (response.statusCode != 204 && response.statusCode != 200) {
       throw HttpException(

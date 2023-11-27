@@ -4,17 +4,45 @@ import 'package:app_ui/app_ui.dart';
 import 'package:domain/domain.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:med_mate/app/app.dart';
 import 'package:med_mate/l10n/l10n.dart';
 import 'package:med_mate/report/report.dart';
 import 'package:med_mate/report/widget/widget.dart';
 import 'package:med_mate/widgets/widget.dart';
 
-class ReportPage extends StatelessWidget {
+class ReportPage extends StatefulWidget {
   const ReportPage({super.key});
+
+  @override
+  State<ReportPage> createState() => _ReportPageState();
+}
+
+class _ReportPageState extends State<ReportPage> {
+  @override
+  void initState() {
+    context.read<ReportCubit>().onOpen(
+          context.read<AppBloc>().state.user.uid,
+        );
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return const ReportView();
+  }
+}
+
+class ReportCubitListener extends StatelessWidget {
+  const ReportCubitListener({required this.child, super.key});
+  final Widget child;
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<ReportCubit, ReportState>(
+      listener: (context, state) {
+        // TODO: implement listener
+      },
+      child: child,
+    );
   }
 }
 

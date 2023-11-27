@@ -11,7 +11,7 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       email: json['email'] as String?,
       emailVerified: json['emailVerified'] as bool?,
       isAnonymous: json['isAnonymous'] as bool,
-      uid: json['uid'] as String?,
+      uid: json['uid'] as int,
       isNewUser: json['isNewUser'] as bool,
     );
 

@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:domain/domain.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:med_mate/application/application.dart';
 
+/// Enum representing different states of the report screen.
 enum ReportEnum {
   initial,
   reportForThisMonth,
@@ -13,6 +13,7 @@ enum ReportEnum {
   reportForChooseASpecificTime,
 }
 
+/// Data structure representing a report entry.
 class ReportData {
   ReportData({
     required this.date,
@@ -29,6 +30,7 @@ class ReportData {
   final int numberOfDrugWaitingToBeTaken;
 }
 
+/// Extension on ReportEnum to simplify state checking.
 extension ReportEnumExtension on ReportEnum {
   bool get isInitial => this == ReportEnum.initial;
   bool get isReportForThisMonth => this == ReportEnum.reportForThisMonth;
@@ -37,11 +39,18 @@ extension ReportEnumExtension on ReportEnum {
       this == ReportEnum.reportForChooseASpecificTime;
 }
 
+/// Cubit responsible for managing the state of the report screen.
 class ReportCubit extends Cubit<ReportState> {
   ReportCubit(this._drugRepository) : super(const ReportState());
   final DrugRepository _drugRepository;
+  int _userId = -1;
+  void onOpen(int userId) {
+    _userId = userId;
+  }
+
+  /// Fetches and displays the report for the current month.
   Future<void> showReportThisMonth() async {
-    final result = await _drugRepository.getDrugs();
+    final result = await _drugRepository.getDrugsByUserId(_userId);
     if (!result.isSuccessful) {
       //todo: What happens when an error occurs
       emit(state.copyWith());
@@ -65,8 +74,9 @@ class ReportCubit extends Cubit<ReportState> {
     );
   }
 
+  /// Fetches and displays the report for the last month.
   Future<void> showReportLastMonth() async {
-    final result = await _drugRepository.getDrugs();
+    final result = await _drugRepository.getDrugsByUserId(_userId);
     if (!result.isSuccessful) {
       //todo: What happens when an error occurs
       emit(state.copyWith());
@@ -90,8 +100,9 @@ class ReportCubit extends Cubit<ReportState> {
     );
   }
 
+  /// Fetches and displays the report for a custom date range.
   Future<void> showReportCustomRange(DateTimeRange dateTimeRange) async {
-    final result = await _drugRepository.getDrugs();
+    final result = await _drugRepository.getDrugsByUserId(_userId);
     if (!result.isSuccessful) {
       //todo: What happens when an error occurs
       emit(state.copyWith());
@@ -109,16 +120,22 @@ class ReportCubit extends Cubit<ReportState> {
     );
   }
 
+  /// Retrieves the date of the previous month.
   DateTime _getPreviousMonth(DateTime currentDate) {
-    // Handle the special case of December, where the previous month is November of the previous year
+    // Handle the special case of December, where the previous
+    // month is November of the previous year
     if (currentDate.month == 12) {
-      return DateTime(currentDate.year - 1, 11, 1);
+      return DateTime(currentDate.year - 1, 11);
     }
 
     // For other months, simply subtract one from the month value
-    return DateTime(currentDate.year, currentDate.month - 1, 1);
+    return DateTime(
+      currentDate.year,
+      currentDate.month - 1,
+    );
   }
 
+  /// Generates a report based on the given drugs and date range.
   List<ReportData> _generateReport(
     List<Drug> drugs, {
     required DateTime startDate,
@@ -142,6 +159,7 @@ class ReportCubit extends Cubit<ReportState> {
     return result;
   }
 
+  /// Populates the report data map based on drug data and date range.
   void populateTheReportDataMap(
     Drug drug,
     Map<int, ReportData> reportDataMap, {
@@ -205,6 +223,7 @@ class ReportCubit extends Cubit<ReportState> {
   }
 }
 
+/// Represents the state of the report screen.
 class ReportState extends Equatable {
   const ReportState({
     this.reportEnum = ReportEnum.initial,

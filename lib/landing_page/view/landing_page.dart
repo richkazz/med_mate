@@ -2,17 +2,37 @@ import 'package:app_ui/app_ui.dart';
 import 'package:domain/domain.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:med_mate/app/app.dart';
 import 'package:med_mate/landing_page/cubit/landing_page_cubit.dart';
 import 'package:med_mate/landing_page/widget/widgets.dart';
 import 'package:med_mate/widgets/widget.dart';
 
-class LandingPage extends StatelessWidget {
+class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
 
   @override
+  State<LandingPage> createState() => _LandingPageState();
+}
+
+class _LandingPageState extends State<LandingPage> {
+  @override
+  void initState() {
+    context
+        .read<LandingPageCubit>()
+        .getDrugsByUserId(context.read<AppBloc>().state.user.uid);
+    super.initState();
+  }
+
+  @override
+  void reassemble() {
+    context
+        .read<LandingPageCubit>()
+        .getDrugsByUserId(context.read<AppBloc>().state.user.uid);
+    super.reassemble();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final drugs = context
-        .select<LandingPageCubit, List<Drug>>((value) => value.state.drugs);
     return Scaffold(
       appBar: AppBar(
         leading: const Padding(
@@ -66,30 +86,43 @@ class LandingPage extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const Divider(
-              color: AppColors.dividerColor,
+      body: const LandingPageView(),
+    );
+  }
+}
+
+class LandingPageView extends StatelessWidget {
+  const LandingPageView({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final drugs = context
+        .select<LandingPageCubit, List<Drug>>((value) => value.state.drugs);
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const Divider(
+            color: AppColors.dividerColor,
+          ),
+          const DateSelector(),
+          if (drugs.isEmpty)
+            const NoMedicationAvailable(
+              key: ValueKey('NoMedicationAvailable'),
+            )
+          else
+            const MedicationAvailable(
+              key: ValueKey('MedicationAvailable'),
             ),
-            const DateSelector(),
-            if (drugs.isEmpty)
-              const NoMedicationAvailable(
-                key: ValueKey('NoMedicationAvailable'),
-              )
-            else
-              const MedicationAvailable(
-                key: ValueKey('MedicationAvailable'),
-              ),
-            const SizedBox(
-              height: AppSpacing.md,
-            ),
-            const AddMedicationButton(),
-            const SizedBox(
-              height: AppSpacing.lg,
-            ),
-          ],
-        ),
+          const SizedBox(
+            height: AppSpacing.md,
+          ),
+          const AddMedicationButton(),
+          const SizedBox(
+            height: AppSpacing.lg,
+          ),
+        ],
       ),
     );
   }

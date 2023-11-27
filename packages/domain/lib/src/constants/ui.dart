@@ -121,7 +121,6 @@ class UIConstants {
     'Every 24 Hours',
     'Every Morning',
     'Every Evening',
-    'Before Meals',
   ];
 
   /// A list of some of the common drugs that can be found in Nigeria

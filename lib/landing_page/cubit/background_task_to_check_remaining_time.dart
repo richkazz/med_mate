@@ -7,6 +7,8 @@ import 'package:domain/domain.dart';
 
 /// Background task for checking missed drugs.
 class BackgroundTaskToCheckRemainingTime {
+  // Constructor initializes the background task and triggers
+  // the first execution.
   BackgroundTaskToCheckRemainingTime(this.drugs) {
     _timer = Timer.periodic(const Duration(minutes: 3), _task);
     _task(drugs);
@@ -27,6 +29,7 @@ class BackgroundTaskToCheckRemainingTime {
   Stream<(Duration, Drug, int)> get eventStream =>
       _eventStreamController.stream;
 
+  // Task executed periodically to find and report the next dosage time.
   void _task(_) {
     final result = findNextDosageTime(drugs);
     _eventStreamController.add(result);
@@ -35,6 +38,7 @@ class BackgroundTaskToCheckRemainingTime {
     }
   }
 
+  // Finds the next dosage time among the given list of drugs.
   (Duration, Drug, int) findNextDosageTime(List<Drug> drugs) {
     var timeClosestToNow = DateTime(4000).microsecondsSinceEpoch;
     var resultDrug = (Drug.empty, -1);
@@ -63,11 +67,13 @@ class BackgroundTaskToCheckRemainingTime {
     return (remainingTime, resultDrug.$1, resultDrug.$2);
   }
 
+  // Calculates the remaining time until the target date and time.
   Duration _calculateRemainingTime(DateTime targetDateTime) {
     // Get the current date and time
     final now = DateTime.now();
 
-    // Calculate the time difference between the target date and time and the current time
+    // Calculate the time difference between the target date and
+    // time and the current time
     final timeDifference = targetDateTime.difference(now);
 
     // Ensure the time difference is positive (in the future)

@@ -40,6 +40,9 @@ class SignUpView extends StatelessWidget {
             padding: const EdgeInsets.all(AppSpacing.md),
             child: Column(
               children: [
+                const SizedBox(
+                  height: AppSpacing.md,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -98,7 +101,16 @@ class SignUpBlocListener extends StatelessWidget {
     return BlocListener<SignUpCubit, SignUpState>(
       listener: (context, state) {
         if (state.submissionStateEnum.isSuccessful) {
-          //
+          AppNotify.dismissNotify();
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Sign up Successful')));
+          Navigator.of(context).pushReplacement(
+            SlidePageRoute<LoginPage>(
+              page: const LoginPage(
+                key: ValueKey<String>('LoginPage'),
+              ),
+            ),
+          );
         } else if (state.submissionStateEnum.isInProgress) {
           AppNotify.showLoading();
         } else if (state.submissionStateEnum.isServerFailure) {
@@ -231,47 +243,6 @@ class _TextFormFieldState extends State<TextFormFieldS> {
           ),
         ],
       ),
-    );
-  }
-}
-
-typedef Validator = String? Function(String?);
-
-class TextFieldItem extends StatelessWidget {
-  const TextFieldItem({
-    required this.title,
-    required this.validator,
-    required this.controller,
-    required this.textInputType,
-    this.obscureText = false,
-    super.key,
-  });
-  final String title;
-  final Validator validator;
-  final TextEditingController controller;
-  final bool obscureText;
-  final TextInputType textInputType;
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                color: AppColors.textDullColor,
-              ),
-        ),
-        const SizedBox(
-          height: AppSpacing.sm,
-        ),
-        AppTextFieldOutlined(
-          validator: validator,
-          controller: controller,
-          obscureText: obscureText,
-          keyboardType: textInputType,
-        ),
-      ],
     );
   }
 }

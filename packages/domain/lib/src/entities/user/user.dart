@@ -8,13 +8,13 @@ class User {
   final String? email;
   final bool? emailVerified;
   final bool isAnonymous;
-  final String? uid;
+  final int uid;
   const User(
       {this.displayName,
       this.email,
       this.emailVerified,
       required this.isAnonymous,
-      this.uid,
+      this.uid = -1,
       required this.isNewUser});
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
   Map<String, dynamic> toJson() => _$UserToJson(this);
@@ -24,7 +24,7 @@ class User {
 
   /// Anonymous user which represents an unauthenticated user.
   static const User anonymous =
-      User(uid: '', isNewUser: true, isAnonymous: true);
+      User(uid: -1, isNewUser: true, isAnonymous: true);
 }
 
 class UserApp {

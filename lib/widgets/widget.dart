@@ -1,4 +1,5 @@
 import 'package:app_ui/app_ui.dart';
+import 'package:domain/domain.dart';
 import 'package:flutter/material.dart';
 import 'package:med_mate/add_med/add_med.dart';
 import 'package:med_mate/l10n/l10n.dart';
@@ -258,6 +259,45 @@ class CustomAppBarWithTitleText extends StatelessWidget
 
   @override
   Size get preferredSize => const Size.fromHeight(70);
+}
+
+class TextFieldItem extends StatelessWidget {
+  const TextFieldItem({
+    required this.title,
+    required this.validator,
+    required this.controller,
+    required this.textInputType,
+    this.obscureText = false,
+    super.key,
+  });
+  final String title;
+  final Validator validator;
+  final TextEditingController controller;
+  final bool obscureText;
+  final TextInputType textInputType;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                color: AppColors.textDullColor,
+              ),
+        ),
+        const SizedBox(
+          height: AppSpacing.sm,
+        ),
+        AppTextFieldOutlined(
+          validator: validator,
+          controller: controller,
+          obscureText: obscureText,
+          keyboardType: textInputType,
+        ),
+      ],
+    );
+  }
 }
 
 class AuthHelperActionText extends StatelessWidget {

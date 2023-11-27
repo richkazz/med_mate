@@ -1,6 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 
 ///A List of to test
@@ -13,16 +10,9 @@ class DosageTimeAndCount {
   const DosageTimeAndCount({
     required this.dosageTimeToBeTaken,
     required this.dosageCount,
+    this.id = -1,
     this.drugToTakeDailyStatusRecord = const {},
   });
-
-  /// Creates a [DosageTimeAndCount] from a map.
-  factory DosageTimeAndCount.fromMap(Map<String, dynamic> map) {
-    return DosageTimeAndCount(
-      dosageTimeToBeTaken: TimeOfDay.now(),
-      dosageCount: map['dosageCount'] as int,
-    );
-  }
 
   /// Gets the daily intake status of the drug for today.
   DrugToTakeDailyStatus get drugToTakeDailyStatusRecordForToday =>
@@ -37,9 +27,9 @@ class DosageTimeAndCount {
         .microsecondsSinceEpoch;
   }
 
-  /// Creates a [DosageTimeAndCount] from a JSON string.
-  factory DosageTimeAndCount.fromJson(String source) =>
-      DosageTimeAndCount.fromMap(json.decode(source) as Map<String, dynamic>);
+  ///The id for this instance and the value should only be updated from the
+  ///web db
+  final int id;
 
   /// The time at which the drug should be taken.
   final TimeOfDay dosageTimeToBeTaken;
@@ -54,26 +44,17 @@ class DosageTimeAndCount {
   DosageTimeAndCount copyWith({
     TimeOfDay? dosageTimeToBeTaken,
     int? dosageCount,
+    int? id,
     Map<int, DrugToTakeDailyStatus>? drugToTakeDailyStatusRecord,
   }) {
     return DosageTimeAndCount(
       dosageTimeToBeTaken: dosageTimeToBeTaken ?? this.dosageTimeToBeTaken,
       dosageCount: dosageCount ?? this.dosageCount,
+      id: id ?? this.id,
       drugToTakeDailyStatusRecord:
           drugToTakeDailyStatusRecord ?? this.drugToTakeDailyStatusRecord,
     );
   }
-
-  /// Converts this [DosageTimeAndCount] to a map for serialization.
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'dosageTimeToBeTaken': dosageTimeToBeTaken.toString(),
-      'dosageCount': dosageCount,
-    };
-  }
-
-  /// Converts this [DosageTimeAndCount] to a JSON string.
-  String toJson() => json.encode(toMap());
 
   @override
   String toString() =>
@@ -127,43 +108,17 @@ class Drug {
     required this.drugIntakeFrequency,
     required this.doseTimeAndCount,
     required this.orderOfDrugIntake,
+    this.scheduleId = -1,
     DateTime? drugIntakeIntervalStart,
     DateTime? drugIntakeIntervalEnd,
   })  : drugIntakeIntervalStart = drugIntakeIntervalStart?.toUtc().toLocal(),
         drugIntakeIntervalEnd = drugIntakeIntervalEnd?.toUtc().toLocal();
 
-  /// Creates a Drug instance from a map.
-  factory Drug.fromMap(Map<String, dynamic> map) {
-    return Drug(
-      name: map['name'] as String,
-      intakeForm: map['intakeForm'] as String,
-      reasonForDrug: map['reasonForDrug'] as String,
-      drugIntakeFrequency: map['drugIntakeFrequency'] as String,
-      drugIntakeIntervalStart: map['drugIntakeIntervalStart'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(
-              map['drugIntakeIntervalStart'] as int,
-            )
-          : null,
-      drugIntakeIntervalEnd: map['drugIntakeIntervalEnd'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(
-              map['drugIntakeIntervalEnd'] as int,
-            )
-          : null,
-      doseTimeAndCount: List<DosageTimeAndCount>.from(
-        (map['doseTimeAndCount'] as List<int>).map<DosageTimeAndCount>(
-          (x) => DosageTimeAndCount.fromMap(x as Map<String, dynamic>),
-        ),
-      ),
-      orderOfDrugIntake: map['orderOfDrugIntake'] as String,
-    );
-  }
-
-  /// Creates a Drug instance from a JSON string.
-  factory Drug.fromJson(String source) =>
-      Drug.fromMap(json.decode(source) as Map<String, dynamic>);
-
   /// The name of the drug.
   final String name;
+
+  ///the schedule id from db
+  final int scheduleId;
 
   /// The form in which the drug is taken (e.g., tablet, liquid).
   final String intakeForm;
@@ -198,9 +153,11 @@ class Drug {
     DateTime? drugIntakeIntervalEnd,
     List<DosageTimeAndCount>? doseTimeAndCount,
     String? orderOfDrugIntake,
+    int? scheduleId,
   }) {
     return Drug(
       name: name ?? this.name,
+      scheduleId: scheduleId ?? this.scheduleId,
       intakeForm: intakeForm ?? this.intakeForm,
       reasonForDrug: reasonForDrug ?? this.reasonForDrug,
       drugIntakeFrequency: drugIntakeFrequency ?? this.drugIntakeFrequency,
@@ -224,24 +181,6 @@ class Drug {
     orderOfDrugIntake: '',
     reasonForDrug: '',
   );
-
-  /// Converts the object to a map for serialization.
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'name': name,
-      'intakeForm': intakeForm,
-      'reasonForDrug': reasonForDrug,
-      'drugIntakeFrequency': drugIntakeFrequency,
-      'drugIntakeIntervalStart':
-          drugIntakeIntervalStart?.millisecondsSinceEpoch,
-      'drugIntakeIntervalEnd': drugIntakeIntervalEnd?.millisecondsSinceEpoch,
-      'doseTimeAndCount': doseTimeAndCount.map((x) => x.toMap()).toList(),
-      'orderOfDrugIntake': orderOfDrugIntake,
-    };
-  }
-
-  /// Converts the object to a JSON string.
-  String toJson() => json.encode(toMap());
 
   @override
   String toString() {

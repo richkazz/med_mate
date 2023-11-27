@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:med_mate/app/app.dart';
 import 'package:med_mate/application/application.dart';
 import 'package:med_mate/home/home.dart';
 import 'package:med_mate/report/report.dart';

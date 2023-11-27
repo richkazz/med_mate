@@ -30,9 +30,22 @@ class LandingPageCubit extends Cubit<LandingPageState> {
   BackgroundTaskToCheckRemainingTime? _remainingTime;
 
   /// Saves a new drug that has been added.
+  Future<void> getDrugsByUserId(int userId) async {
+    final result = await _drugRepository.getDrugsByUserId(userId);
+    if (!result.isSuccessful) {
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        drugs: _sortedDrugs(result.data!),
+      ),
+    );
+    initiateBackgroundTask();
+  }
+
   Future<void> saveNewDrugAdded(Drug drug) async {
-    final result = await _drugRepository.createDrug(drug);
-    final newListOfDrugs = [...state.drugs, result.data!];
+    final newListOfDrugs = [...state.drugs, drug];
     emit(
       state.copyWith(
         drugs: _sortedDrugs(newListOfDrugs),

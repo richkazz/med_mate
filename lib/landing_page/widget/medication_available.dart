@@ -3,11 +3,9 @@ import 'package:domain/domain.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:med_mate/landing_page/cubit/landing_page_cubit.dart';
+import 'package:med_mate/landing_page/cubit/landing_page_state.dart';
 import 'package:med_mate/landing_page/widget/drug_detail.dart';
-import 'package:med_mate/widgets/widget.dart';
-
-import '../cubit/landing_page_state.dart';
-import 'medication_available_section_one.dart';
+import 'package:med_mate/landing_page/widget/medication_available_section_one.dart';
 
 class MedicationAvailable extends StatelessWidget {
   const MedicationAvailable({super.key});
