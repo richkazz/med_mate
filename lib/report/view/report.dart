@@ -28,7 +28,7 @@ class _ReportPageState extends State<ReportPage> {
 
   @override
   Widget build(BuildContext context) {
-    return const ReportView();
+    return const ReportCubitListener(child: ReportView());
   }
 }
 
@@ -39,7 +39,13 @@ class ReportCubitListener extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<ReportCubit, ReportState>(
       listener: (context, state) {
-        // TODO: implement listener
+        if (state.formSubmissionStateEnum.isSuccessful) {
+          AppNotify.dismissNotify();
+        } else if (state.formSubmissionStateEnum.isServerFailure) {
+          AppNotify.showError(errorMessage: state.errorMessage);
+        } else if (state.formSubmissionStateEnum.isInProgress) {
+          AppNotify.showLoading();
+        }
       },
       child: child,
     );

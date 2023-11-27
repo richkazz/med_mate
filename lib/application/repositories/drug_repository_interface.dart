@@ -48,10 +48,11 @@ class DrugRepository {
   }
 
   TimeOfDay _getTimeOfDayFromDateTimeString(String dateTimeString) {
-    final dateTime = DateTime.tryParse(dateTimeString);
+    var dateTime = DateTime.tryParse(dateTimeString)?.toLocal();
     if (dateTime == null) {
       return TimeOfDay.now();
     }
+    dateTime = dateTime.add(const Duration(hours: 1));
     return TimeOfDay(hour: dateTime.hour, minute: dateTime.minute);
   }
 

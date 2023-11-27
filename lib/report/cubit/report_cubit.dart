@@ -50,10 +50,20 @@ class ReportCubit extends Cubit<ReportState> {
 
   /// Fetches and displays the report for the current month.
   Future<void> showReportThisMonth() async {
+    emit(
+      state.copyWith(
+        formSubmissionStateEnum: FormSubmissionStateEnum.inProgress,
+      ),
+    );
     final result = await _drugRepository.getDrugsByUserId(_userId);
     if (!result.isSuccessful) {
-      //todo: What happens when an error occurs
-      emit(state.copyWith());
+      emit(
+        state.copyWith(
+          formSubmissionStateEnum: FormSubmissionStateEnum.serverFailure,
+          errorMessage: result.errorMessage,
+        ),
+      );
+      return;
     }
 
     final monthDate = DateTime.now();
@@ -64,6 +74,7 @@ class ReportCubit extends Cubit<ReportState> {
         .add(const Duration(days: 1));
     emit(
       state.copyWith(
+        formSubmissionStateEnum: FormSubmissionStateEnum.successful,
         reportEnum: ReportEnum.reportForThisMonth,
         reportDataList: _generateReport(
           result.data!,
@@ -76,10 +87,20 @@ class ReportCubit extends Cubit<ReportState> {
 
   /// Fetches and displays the report for the last month.
   Future<void> showReportLastMonth() async {
+    emit(
+      state.copyWith(
+        formSubmissionStateEnum: FormSubmissionStateEnum.inProgress,
+      ),
+    );
     final result = await _drugRepository.getDrugsByUserId(_userId);
     if (!result.isSuccessful) {
-      //todo: What happens when an error occurs
-      emit(state.copyWith());
+      emit(
+        state.copyWith(
+          formSubmissionStateEnum: FormSubmissionStateEnum.serverFailure,
+          errorMessage: result.errorMessage,
+        ),
+      );
+      return;
     }
 
     final monthDate = _getPreviousMonth(DateTime.now());
@@ -90,6 +111,7 @@ class ReportCubit extends Cubit<ReportState> {
         .add(const Duration(days: 1));
     emit(
       state.copyWith(
+        formSubmissionStateEnum: FormSubmissionStateEnum.successful,
         reportEnum: ReportEnum.reportForThisMonth,
         reportDataList: _generateReport(
           result.data!,
@@ -102,14 +124,25 @@ class ReportCubit extends Cubit<ReportState> {
 
   /// Fetches and displays the report for a custom date range.
   Future<void> showReportCustomRange(DateTimeRange dateTimeRange) async {
+    emit(
+      state.copyWith(
+        formSubmissionStateEnum: FormSubmissionStateEnum.inProgress,
+      ),
+    );
     final result = await _drugRepository.getDrugsByUserId(_userId);
     if (!result.isSuccessful) {
-      //todo: What happens when an error occurs
-      emit(state.copyWith());
+      emit(
+        state.copyWith(
+          formSubmissionStateEnum: FormSubmissionStateEnum.serverFailure,
+          errorMessage: result.errorMessage,
+        ),
+      );
+      return;
     }
 
     emit(
       state.copyWith(
+        formSubmissionStateEnum: FormSubmissionStateEnum.successful,
         reportEnum: ReportEnum.reportForThisMonth,
         reportDataList: _generateReport(
           result.data!,
@@ -227,19 +260,28 @@ class ReportCubit extends Cubit<ReportState> {
 class ReportState extends Equatable {
   const ReportState({
     this.reportEnum = ReportEnum.initial,
+    this.formSubmissionStateEnum = FormSubmissionStateEnum.initial,
     this.reportDataList = const [],
+    this.errorMessage = '',
   });
   final ReportEnum reportEnum;
+  final FormSubmissionStateEnum formSubmissionStateEnum;
   final List<ReportData> reportDataList;
+  final String errorMessage;
   @override
   List<Object> get props => [reportEnum, reportDataList];
 
   ReportState copyWith({
     ReportEnum? reportEnum,
+    String? errorMessage,
+    FormSubmissionStateEnum? formSubmissionStateEnum,
     List<ReportData>? reportDataList,
   }) {
     return ReportState(
       reportEnum: reportEnum ?? this.reportEnum,
+      errorMessage: errorMessage ?? this.errorMessage,
+      formSubmissionStateEnum:
+          formSubmissionStateEnum ?? this.formSubmissionStateEnum,
       reportDataList: reportDataList ?? this.reportDataList,
     );
   }
