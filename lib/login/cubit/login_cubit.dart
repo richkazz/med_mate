@@ -7,26 +7,35 @@ class LoginCubit extends Cubit<LoginState> {
   final AuthenticationRepository _authenticationRepository;
   LoginCubit(this._authenticationRepository) : super(LoginState());
   Future<void> submit(Login login) async {
-    emit(
-      state.copyWith(
-        submissionStateEnum: FormSubmissionStateEnum.inProgress,
-      ),
-    );
-    final result = await _authenticationRepository.signIn(login);
-    if (result.isSuccessful) {
+    try {
       emit(
         state.copyWith(
-          submissionStateEnum: FormSubmissionStateEnum.successful,
+          submissionStateEnum: FormSubmissionStateEnum.inProgress,
         ),
       );
-      return;
+      final result = await _authenticationRepository.signIn(login);
+      if (result.isSuccessful) {
+        emit(
+          state.copyWith(
+            submissionStateEnum: FormSubmissionStateEnum.successful,
+          ),
+        );
+        return;
+      }
+      emit(
+        state.copyWith(
+          submissionStateEnum: FormSubmissionStateEnum.serverFailure,
+          errorMessage: result.errorMessage,
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          submissionStateEnum: FormSubmissionStateEnum.serverFailure,
+          errorMessage: 'Something went wrong',
+        ),
+      );
     }
-    emit(
-      state.copyWith(
-        submissionStateEnum: FormSubmissionStateEnum.serverFailure,
-        errorMessage: result.errorMessage,
-      ),
-    );
   }
 }
 

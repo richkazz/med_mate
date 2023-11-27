@@ -12,40 +12,39 @@ class SaveDrugCubit extends Cubit<SaveDrugState> {
   })  : _notificationService = notificationService,
         super(SaveDrugState(drug: Drug.empty));
   Future<void> saveNewDrugAdded(Drug drug, int userId) async {
-    emit(
-      state.copyWith(
-        submissionStateEnum: FormSubmissionStateEnum.inProgress,
-      ),
-    );
-    final result = await _drugRepository.createDrug(drug, userId);
-    if (result.isSuccessful) {
-      try {
-        await scheduleNotification(result.data!);
-      } catch (e) {
-        emit(
-          state.copyWith(
-            submissionStateEnum: FormSubmissionStateEnum.serverFailure,
-            errorMessage: 'Error scheduling drugs',
-          ),
-        );
-        return;
-      }
-
+    try {
       emit(
         state.copyWith(
-          submissionStateEnum: FormSubmissionStateEnum.successful,
-          drug: result.data,
+          submissionStateEnum: FormSubmissionStateEnum.inProgress,
         ),
       );
+      final result = await _drugRepository.createDrug(drug, userId);
+      if (result.isSuccessful) {
+        await scheduleNotification(result.data!);
+        emit(
+          state.copyWith(
+            submissionStateEnum: FormSubmissionStateEnum.successful,
+            drug: result.data,
+          ),
+        );
 
+        return;
+      }
+      emit(
+        state.copyWith(
+          submissionStateEnum: FormSubmissionStateEnum.serverFailure,
+          errorMessage: result.errorMessage,
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          submissionStateEnum: FormSubmissionStateEnum.serverFailure,
+          errorMessage: 'Error scheduling drugs',
+        ),
+      );
       return;
     }
-    emit(
-      state.copyWith(
-        submissionStateEnum: FormSubmissionStateEnum.serverFailure,
-        errorMessage: result.errorMessage,
-      ),
-    );
   }
 
   Future<void> scheduleNotification(Drug drug) async {

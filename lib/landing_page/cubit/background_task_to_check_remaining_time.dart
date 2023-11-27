@@ -11,7 +11,7 @@ class BackgroundTaskToCheckRemainingTime {
   // the first execution.
   BackgroundTaskToCheckRemainingTime(this.drugs) {
     _timer = Timer.periodic(const Duration(minutes: 3), _task);
-    _task(drugs);
+    //_task(drugs);
   }
 
   final List<Drug> drugs;

@@ -1,4 +1,5 @@
 import 'package:app_ui/app_ui.dart';
+import 'package:domain/domain.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:med_mate/landing_page/cubit/landing_page_cubit.dart';
@@ -22,29 +23,27 @@ class MedicationAvailable extends StatelessWidget {
         const SizedBox(
           height: 60,
         ),
-        BlocBuilder<LandingPageBloc, LandingPageState>(
-          buildWhen: (previous, current) =>
-              current.landingPageEnum == LandingPageEnum.drugListChanged,
+        BlocSelector<LandingPageBloc, LandingPageState, List<Drug>>(
+          selector: (state) => state.drugs,
           builder: (context, state) {
-            final drugs = context.read<LandingPageBloc>().drugs;
             return Wrap(
               spacing: AppSpacing.md,
               runSpacing: AppSpacing.md,
               children: [
-                ...drugs.map(
-                  (drug) => Wrap(
-                    spacing: AppSpacing.md,
-                    runSpacing: AppSpacing.md,
-                    children: List.generate(
-                      drug.doseTimeAndCount.length,
-                      (index) => DrugDetailInherited(
-                        drug: drug,
-                        indexOfDrugDosageTime: index,
-                        child: DrugDetailItem(theme: theme),
+                ...context.read<LandingPageBloc>().state.drugs.map(
+                      (drug) => Wrap(
+                        spacing: AppSpacing.md,
+                        runSpacing: AppSpacing.md,
+                        children: List.generate(
+                          drug.doseTimeAndCount.length,
+                          (index) => DrugDetailInherited(
+                            drug: drug,
+                            indexOfDrugDosageTime: index,
+                            child: DrugDetailItem(theme: theme),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
               ],
             );
           },
