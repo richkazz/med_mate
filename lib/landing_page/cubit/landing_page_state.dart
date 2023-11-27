@@ -8,12 +8,10 @@ import 'package:med_mate/landing_page/cubit/landing_page_cubit.dart';
 class LandingPageState extends Equatable {
   const LandingPageState({
     required this.nextDosageTime,
-    this.drugs = const [],
     this.errorMessage = '',
     this.landingPageEnum = LandingPageEnum.initial,
     this.submissionStateEnum = FormSubmissionStateEnum.inProgress,
   });
-  final List<Drug> drugs;
   final LandingPageEnum landingPageEnum;
   final FormSubmissionStateEnum submissionStateEnum;
   final String errorMessage;
@@ -21,14 +19,12 @@ class LandingPageState extends Equatable {
 
   /// Creates a copy of the state with optional new values.
   LandingPageState copyWith({
-    List<Drug>? drugs,
     String? errorMessage,
     FormSubmissionStateEnum? submissionStateEnum,
     LandingPageEnum? landingPageEnum,
     (Duration, Drug, int)? nextDosageTime,
   }) {
     return LandingPageState(
-      drugs: drugs ?? this.drugs,
       errorMessage: errorMessage ?? this.errorMessage,
       submissionStateEnum: submissionStateEnum ?? this.submissionStateEnum,
       landingPageEnum: landingPageEnum ?? this.landingPageEnum,
@@ -37,11 +33,6 @@ class LandingPageState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [
-        ...drugs,
-        landingPageEnum,
-        drugs.length,
-        nextDosageTime,
-        submissionStateEnum
-      ];
+  List<Object?> get props =>
+      [landingPageEnum, nextDosageTime, submissionStateEnum];
 }

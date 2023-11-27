@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:app_ui/app_ui.dart';
 import 'package:domain/domain.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +37,8 @@ class _LandingPageState extends State<LandingPage> {
     return Scaffold(
       floatingActionButton: BlocBuilder<LandingPageBloc, LandingPageState>(
         builder: (context, state) {
-          if (state.drugs.isEmpty) {
+          final drugs = context.read<LandingPageBloc>().drugs;
+          if (drugs.isEmpty) {
             return const SizedBox();
           }
           return IconButton(
@@ -147,8 +150,11 @@ class LandingPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final drugs = context
-        .select<LandingPageBloc, List<Drug>>((value) => value.state.drugs);
+    final isDrugListChange = context.select<LandingPageBloc, bool>(
+      (value) => value.state.landingPageEnum == LandingPageEnum.drugListChanged,
+    );
+    log(isDrugListChange.toString());
+    final drugs = context.read<LandingPageBloc>().drugs;
     return SingleChildScrollView(
       child: Column(
         children: [
