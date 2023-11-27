@@ -3,7 +3,7 @@ import 'package:domain/domain.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:med_mate/add_med/cubit/save_drug.dart';
-import 'package:med_mate/add_med/cubit/search_cubit.dart';
+import 'package:med_mate/add_med/cubit/add_med_cubit.dart';
 import 'package:med_mate/add_med/view/add_med.dart';
 import 'package:med_mate/add_med/view/add_med_search.dart';
 import 'package:med_mate/app/app.dart';

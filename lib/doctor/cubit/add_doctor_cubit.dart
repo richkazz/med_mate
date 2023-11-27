@@ -12,7 +12,7 @@ class AddDoctorCubit extends Cubit<AddDoctorState> {
         submissionStateEnum: FormSubmissionStateEnum.inProgress,
       ),
     );
-    final result = await _doctorRepository.linkADoctor(email);
+    final result = await _doctorRepository.linkADoctor(email, 1);
     if (result.isSuccessful) {
       emit(
         state.copyWith(

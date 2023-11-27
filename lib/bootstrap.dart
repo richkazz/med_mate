@@ -7,6 +7,7 @@ import 'package:domain/domain.dart';
 import 'package:flutter/widgets.dart';
 import 'package:med_mate/application/application.dart';
 
+/// Observes the state changes and errors in BLoCs and logs them.
 class AppBlocObserver extends BlocObserver {
   const AppBlocObserver();
 
@@ -23,6 +24,11 @@ class AppBlocObserver extends BlocObserver {
   }
 }
 
+/// Bootstraps the application with necessary services and configurations.
+///
+/// [builder] is a function that takes various repositories and services
+/// as parameters
+/// and returns the root widget of the application.
 Future<void> bootstrap(
   FutureOr<Widget> Function(
     DrugRepository drugRepository,
@@ -33,15 +39,20 @@ Future<void> bootstrap(
     AuthenticationRepository authenticationRepository,
   ) builder,
 ) async {
+  // Ensure the Flutter app is initialized.
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Handle errors by logging them.
   FlutterError.onError = (details) {
     log(details.exceptionAsString(), stackTrace: details.stack);
   };
 
+  // Use the custom BLoC observer for logging state changes and errors.
   Bloc.observer = const AppBlocObserver();
+
+  // Create instances of essential services and repositories.
   final resultService = ResultService();
   final notificationService = NotificationService();
-  // Add cross-flavor configuration here
   final dataConnectionChecker = DataConnectionChecker();
   final networkInfo = NetworkInfoImpl(dataConnectionChecker);
   final tokenValueNotifier = ValueNotifier<String>('');
@@ -55,12 +66,13 @@ Future<void> bootstrap(
       DoctorRepository(httpService, resultService: resultService);
   final drugRepository =
       DrugRepository(httpService, resultService: resultService);
-
   final authService = AuthenticationRepository(
     httpService,
     resultService: resultService,
     tokenValueNotifier: tokenValueNotifier,
   );
+
+  // Run the application using the provided builder function.
   runApp(
     await builder(
       drugRepository,

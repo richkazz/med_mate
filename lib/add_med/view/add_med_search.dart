@@ -3,7 +3,7 @@ import 'package:domain/domain.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:med_mate/add_med/cubit/search_cubit.dart';
+import 'package:med_mate/add_med/cubit/add_med_cubit.dart';
 import 'package:med_mate/add_med/widget/widget.dart';
 import 'package:med_mate/l10n/l10n.dart';
 import 'package:med_mate/widgets/widget.dart';

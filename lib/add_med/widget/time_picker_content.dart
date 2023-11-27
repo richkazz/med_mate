@@ -2,7 +2,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:domain/domain.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:med_mate/add_med/cubit/search_cubit.dart';
+import 'package:med_mate/add_med/cubit/add_med_cubit.dart';
 
 class TimePickerContentPickerContent extends StatefulWidget {
   const TimePickerContentPickerContent({super.key});

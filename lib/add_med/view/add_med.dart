@@ -2,7 +2,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:domain/domain.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:med_mate/add_med/cubit/search_cubit.dart';
+import 'package:med_mate/add_med/cubit/add_med_cubit.dart';
 import 'package:med_mate/add_med/view/add_med_search.dart';
 import 'package:med_mate/add_med/view/drug_intake_order_form.dart';
 import 'package:med_mate/l10n/l10n.dart';

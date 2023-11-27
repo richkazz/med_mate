@@ -2,9 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:app_ui/app_ui.dart';
 import 'package:domain/domain.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
@@ -68,7 +66,6 @@ class NotificationService {
   /// A notification action which triggers a reschedule of a drug
   String rescheduleActionId = 'reschedule_action_id_3';
 
-  bool _notificationsEnabled = true;
   Future<void> init() async {
     await _configureLocalTimeZone();
 
@@ -117,8 +114,8 @@ class NotificationService {
       return;
     }
     tz.initializeTimeZones();
-    final String? timeZoneName = await FlutterTimezone.getLocalTimezone();
-    tz.setLocalLocation(tz.getLocation(timeZoneName!));
+    final timeZoneName = await FlutterTimezone.getLocalTimezone();
+    tz.setLocalLocation(tz.getLocation(timeZoneName));
   }
 
   Future<void> _isAndroidPermissionGranted() async {
@@ -127,7 +124,6 @@ class NotificationService {
                 AndroidFlutterLocalNotificationsPlugin>()
             ?.areNotificationsEnabled() ??
         false;
-    _notificationsEnabled = granted;
   }
 
   Future<void> _requestPermissions() async {
@@ -137,19 +133,18 @@ class NotificationService {
 
     final grantedNotificationPermission =
         await androidImplementation?.requestNotificationsPermission();
-    _notificationsEnabled = grantedNotificationPermission ?? false;
   }
 
   void _configureDidReceiveLocalNotificationSubject() {
     didReceiveLocalNotificationStream.stream
         .listen((ReceivedNotification receivedNotification) async {
-      var x = 0;
+      //TODO: handels when a notification action is clicked
     });
   }
 
   void _configureSelectNotificationSubject() {
     selectNotificationStream.stream.listen((String? payload) async {
-      var x = 0;
+      //TODO: handels when a notification action is clicked
     });
   }
 
