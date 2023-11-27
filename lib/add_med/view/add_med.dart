@@ -2,16 +2,11 @@ import 'package:app_ui/app_ui.dart';
 import 'package:domain/domain.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:med_mate/add_med/cubit/save_drug.dart';
 import 'package:med_mate/add_med/cubit/search_cubit.dart';
 import 'package:med_mate/add_med/view/add_med_search.dart';
-import 'package:med_mate/app/app.dart';
-import 'package:med_mate/application/application.dart';
+import 'package:med_mate/add_med/view/drug_intake_order_form.dart';
 import 'package:med_mate/l10n/l10n.dart';
-import 'package:med_mate/landing_page/cubit/landing_page_cubit.dart';
 import 'package:med_mate/widgets/widget.dart';
-
-import 'drug_intake_order_form.dart';
 
 class AddMedication extends StatefulWidget {
   const AddMedication({super.key});

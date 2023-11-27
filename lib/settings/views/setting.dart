@@ -199,10 +199,7 @@ class ProfilePictureAndNameWithEmailSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const CircleAvatar(
-          radius: 30,
-          child: Icon(Icons.account_balance_outlined),
-        ),
+        Assets.images.boyFaceProfile.image(package: 'app_ui', scale: 0.7),
         const SizedBox(
           width: AppSpacing.sm,
         ),

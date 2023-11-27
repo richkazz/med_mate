@@ -51,7 +51,7 @@ class DrugDetailItem extends StatelessWidget {
           theme: theme,
           drug: drug,
           indexOfDosageTime: indexOfDosageTime,
-          landingPageCubit: context.read<LandingPageCubit>(),
+          landingPageCubit: context.read<LandingPageBloc>(),
         ),
       );
     }
@@ -127,7 +127,7 @@ class DrugDetailItemContent extends StatelessWidget {
       (DrugToTakeDailyStatus.missed) => ('Missed', AppColors.red),
       (DrugToTakeDailyStatus.skipped) => ('Skipped', AppColors.orange),
       (DrugToTakeDailyStatus.waitingToBeTaken) => (
-          drug.orderOfDrugIntake,
+          drug.intakeForm,
           AppColors.textDullColor
         ),
     };
@@ -226,7 +226,7 @@ class DrugDetailPopUp extends StatelessWidget {
     required this.indexOfDosageTime,
     super.key,
   });
-  final LandingPageCubit landingPageCubit;
+  final LandingPageBloc landingPageCubit;
   final ThemeData theme;
   final Drug drug;
   final int indexOfDosageTime;
@@ -383,7 +383,7 @@ class DrugDetailController {
   final int indexOfDosageTime;
   final BuildContext context;
   Future<void> onSkippedButtonClicked(
-    LandingPageCubit landingPageCubit,
+    LandingPageBloc landingPageCubit,
     ThemeData theme,
   ) async {
     await _showConfirmActionDrugIntakeDialog(
@@ -391,11 +391,11 @@ class DrugDetailController {
       theme,
       onCancelClicked: () {},
       onConfirmClicked: () {
-        landingPageCubit.changeDrugStatusForToday(
+        landingPageCubit.add(ChangeDrugStatusForToday(value: (
           drug,
           DrugToTakeDailyStatus.skipped,
           indexOfDosageTime,
-        );
+        )));
       },
       actionStatement: 'You are about to skip'
           ' ${drug.doseTimeAndCount[indexOfDosageTime].dosageCount} '
@@ -408,7 +408,7 @@ class DrugDetailController {
   }
 
   Future<void> onDoneButtonClicked(
-    LandingPageCubit landingPageCubit,
+    LandingPageBloc landingPageCubit,
     ThemeData theme,
   ) async {
     await _showConfirmActionDrugIntakeDialog(
@@ -419,11 +419,11 @@ class DrugDetailController {
           'dose of ${drug.name}',
       onCancelClicked: () {},
       onConfirmClicked: () {
-        landingPageCubit.changeDrugStatusForToday(
+        landingPageCubit.add(ChangeDrugStatusForToday(value: (
           drug,
           DrugToTakeDailyStatus.taken,
           indexOfDosageTime,
-        );
+        )));
       },
       icon: IconWithRoundedBackground(
         color: AppColors.icon2BackgroundColor,
@@ -434,7 +434,7 @@ class DrugDetailController {
 
   Future<void> onRescheduleButtonClicked(
     Drug drug,
-    LandingPageCubit landingPageCubit,
+    LandingPageBloc landingPageCubit,
     ThemeData theme,
   ) async {}
 }

@@ -9,10 +9,12 @@ void main() {
       doctorRepository,
       netWorkInfo,
       httpService,
+      notificationService,
       authenticationRepository,
     ) =>
         App(
       user: User.anonymous,
+      notificationService: notificationService,
       networkInfoImpl: netWorkInfo,
       drugRepository: drugRepository,
       doctorRepository: doctorRepository,

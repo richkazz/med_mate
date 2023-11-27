@@ -11,8 +11,10 @@ part 'app_state.dart';
 class AppBloc extends Bloc<AppEvent, AppState> {
   AppBloc({
     required User user,
+    required NotificationService notificationService,
     required AuthenticationRepository authenticationRepository,
   })  : _authenticationRepository = authenticationRepository,
+        _notificationService = notificationService,
         super(
           user == User.anonymous
               ? AppState.unauthenticated()
@@ -25,7 +27,9 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
     _userSubscription =
         _authenticationRepository.userStream.listen(_userChanged);
+    _notificationService.init();
   }
+  final NotificationService _notificationService;
   final AuthenticationRepository _authenticationRepository;
   late StreamSubscription<User> _userSubscription;
 
@@ -60,7 +64,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   void _onLogoutRequested(AppLogoutRequested event, Emitter<AppState> emit) {
     // We are disabling notifications when a user logs out because
     // the user should not receive any notifications when logged out.
-    //unawaited(_notificationsRepository.toggleNotifications(enable: false));
+    unawaited(_notificationService.cancelNotification());
 
     unawaited(_authenticationRepository.signOut());
   }

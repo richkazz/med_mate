@@ -20,7 +20,6 @@ class ReportDataAvailable extends StatelessWidget {
               const SizedBox(
                 height: AppSpacing.xlg,
               ),
-              const AddMedicationButton(),
             ],
           );
         }

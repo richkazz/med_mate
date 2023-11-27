@@ -23,14 +23,14 @@ class MedicationAvailable extends StatelessWidget {
         const SizedBox(
           height: 60,
         ),
-        BlocSelector<LandingPageCubit, LandingPageState, List<Drug>>(
+        BlocSelector<LandingPageBloc, LandingPageState, List<Drug>>(
           selector: (state) => state.drugs,
           builder: (context, state) {
             return Wrap(
               spacing: AppSpacing.md,
               runSpacing: AppSpacing.md,
               children: [
-                ...context.read<LandingPageCubit>().state.drugs.map(
+                ...context.read<LandingPageBloc>().state.drugs.map(
                       (drug) => Wrap(
                         spacing: AppSpacing.md,
                         runSpacing: AppSpacing.md,

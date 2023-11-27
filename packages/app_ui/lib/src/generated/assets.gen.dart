@@ -223,6 +223,10 @@ class $AssetsImagesGen {
   AssetGenImage get appLogo2 =>
       const AssetGenImage('assets/images/app_logo_2.png');
 
+  /// File path: assets/images/boy face profile.png
+  AssetGenImage get boyFaceProfile =>
+      const AssetGenImage('assets/images/boy face profile.png');
+
   /// File path: assets/images/boy_face.png
   AssetGenImage get boyFace =>
       const AssetGenImage('assets/images/boy_face.png');
@@ -259,6 +263,7 @@ class $AssetsImagesGen {
         medicineCuate1,
         appLogo,
         appLogo2,
+        boyFaceProfile,
         boyFace,
         continueWithApple,
         continueWithFacebook,

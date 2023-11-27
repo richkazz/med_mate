@@ -112,7 +112,7 @@ class ReportCubit extends Cubit<ReportState> {
     emit(
       state.copyWith(
         formSubmissionStateEnum: FormSubmissionStateEnum.successful,
-        reportEnum: ReportEnum.reportForThisMonth,
+        reportEnum: ReportEnum.reportForLastMonth,
         reportDataList: _generateReport(
           result.data!,
           startDate: firstDayOfMonth,
@@ -143,7 +143,7 @@ class ReportCubit extends Cubit<ReportState> {
     emit(
       state.copyWith(
         formSubmissionStateEnum: FormSubmissionStateEnum.successful,
-        reportEnum: ReportEnum.reportForThisMonth,
+        reportEnum: ReportEnum.reportForChooseASpecificTime,
         reportDataList: _generateReport(
           result.data!,
           startDate: dateTimeRange.start,
@@ -269,7 +269,8 @@ class ReportState extends Equatable {
   final List<ReportData> reportDataList;
   final String errorMessage;
   @override
-  List<Object> get props => [reportEnum, reportDataList];
+  List<Object> get props =>
+      [reportEnum, reportDataList, formSubmissionStateEnum, errorMessage];
 
   ReportState copyWith({
     ReportEnum? reportEnum,

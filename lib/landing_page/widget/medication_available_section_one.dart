@@ -54,7 +54,7 @@ class NextDosageTimeAndButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LandingPageCubit, LandingPageState>(
+    return BlocBuilder<LandingPageBloc, LandingPageState>(
       buildWhen: (previous, current) =>
           current.nextDosageTime != previous.nextDosageTime,
       builder: (context, state) {
@@ -86,7 +86,7 @@ class NextDosageTimeAndButton extends StatelessWidget {
                         ? null
                         : () {
                             detailController.onDoneButtonClicked(
-                              context.read<LandingPageCubit>(),
+                              context.read<LandingPageBloc>(),
                               Theme.of(context),
                             );
                           },

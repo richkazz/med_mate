@@ -14,6 +14,7 @@ class App extends StatelessWidget {
     required this.drugRepository,
     required this.doctorRepository,
     required this.networkInfoImpl,
+    required this.notificationService,
     required this.httpService,
     required this.authenticationRepository,
     super.key,
@@ -21,6 +22,7 @@ class App extends StatelessWidget {
 
   final User _user;
   final DrugRepository drugRepository;
+  final NotificationService notificationService;
   final DoctorRepository doctorRepository;
   final NetworkInfoImpl networkInfoImpl;
   final HttpService httpService;
@@ -29,6 +31,9 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
+        RepositoryProvider<NotificationService>(
+          create: (context) => notificationService,
+        ),
         RepositoryProvider<DrugRepository>(
           create: (context) => drugRepository,
         ),
@@ -49,12 +54,13 @@ class App extends StatelessWidget {
         providers: [
           BlocProvider(
             create: (_) => AppBloc(
+              notificationService: notificationService,
               user: _user,
               authenticationRepository: authenticationRepository,
             )..add(const AppOpened()),
           ),
           BlocProvider(
-            create: (_) => LandingPageCubit(drugRepository),
+            create: (_) => LandingPageBloc(drugRepository),
           ),
         ],
         child: const AppView(),

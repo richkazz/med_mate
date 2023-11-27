@@ -175,28 +175,9 @@ class LoadingContent extends StatelessWidget {
           width: value.$1.isNone ? 0 : MediaQuery.sizeOf(context).width,
           color: AppColors.black.withOpacity(0.1),
           child: value.$1.isError
-              ? Scaffold(
-                  backgroundColor: AppColors.transparent,
-                  body: Stack(
-                    children: [
-                      ModalBarrier(
-                        onDismiss: () {
-                          AppNotify.dismissNotify();
-                          if (value.$3 != null) {
-                            value.$3!();
-                          }
-                        },
-                      ),
-                      Center(
-                          child: Text(
-                        value.$2 ?? 'error',
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleSmall!
-                            .copyWith(color: AppColors.red),
-                      )),
-                    ],
-                  ),
+              ? _NotifyErrorContent(
+                  message: value.$2,
+                  onPressed: value.$3 ?? () {},
                 )
               : value.$1.isSuccessful
                   ? Scaffold(
@@ -239,6 +220,84 @@ class LoadingContent extends StatelessWidget {
                     ),
         );
       },
+    );
+  }
+}
+
+class _NotifyErrorContent extends StatelessWidget {
+  const _NotifyErrorContent({
+    required this.onPressed,
+    super.key,
+    this.message,
+  });
+  final VoidCallback onPressed;
+  final String? message;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.transparent,
+      body: Stack(
+        children: [
+          ModalBarrier(
+            onDismiss: () {
+              AppNotify.dismissNotify();
+              onPressed();
+            },
+          ),
+          Center(
+            child: Dialog(
+              backgroundColor: AppColors.white,
+              surfaceTintColor: AppColors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.error,
+                      color: AppColors.red,
+                    ),
+                    const SizedBox(
+                      height: AppSpacing.md,
+                    ),
+                    Text(
+                      message ?? 'error',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleSmall!
+                          .copyWith(fontWeight: FontWeight.w500),
+                    ),
+                    const SizedBox(
+                      height: AppSpacing.md,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        SizedBox(
+                          width: 90,
+                          height: 35,
+                          child: AppButton.primary(
+                            borderRadius: 5,
+                            onPressed: () {
+                              AppNotify.dismissNotify();
+                              onPressed();
+                            },
+                            child: const Text('Cancel'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 }

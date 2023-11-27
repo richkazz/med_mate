@@ -33,35 +33,42 @@ class DrugIntakeOrderForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => AddMedicationCubit()
-              ..onOpened(
-                UIConstants.drugIntakeOrder,
-                initialValue: drug.orderOfDrugIntake,
-                addMedicationFormType: AddMedicationFormType.selectOne,
-              ),
+      providers: [
+        BlocProvider(
+          create: (context) => AddMedicationCubit()
+            ..onOpened(
+              UIConstants.drugIntakeOrder,
+              initialValue: drug.orderOfDrugIntake,
+              addMedicationFormType: AddMedicationFormType.selectOne,
+            ),
+        ),
+        BlocProvider(
+          create: (context) => SaveDrugCubit(
+            context.read<DrugRepository>(),
+            notificationService: context.read<NotificationService>(),
           ),
-          BlocProvider(
-            create: (context) => SaveDrugCubit(context.read<DrugRepository>()),
-          ),
-        ],
-        child: BlocListener<SaveDrugCubit, SaveDrugState>(
-            listener: (context, state) {
-              if (state.submissionStateEnum.isSuccessful) {
-                AppNotify.dismissNotify();
-                context.read<LandingPageCubit>().saveNewDrugAdded(state.drug);
-                _showDialog(context);
-                Navigator.popUntil(context, (route) => route.isFirst);
-              } else if (state.submissionStateEnum.isServerFailure) {
-                AppNotify.showError(errorMessage: state.errorMessage);
-              } else if (state.submissionStateEnum.isInProgress) {
-                AppNotify.showLoading();
-              }
-            },
-            child: DrugIntakeOrderFormView(
-              drug: drug,
-            )));
+        ),
+      ],
+      child: BlocListener<SaveDrugCubit, SaveDrugState>(
+        listener: (context, state) {
+          if (state.submissionStateEnum.isSuccessful) {
+            AppNotify.dismissNotify();
+            context
+                .read<LandingPageBloc>()
+                .add(SaveNewDrugAdded(drug: state.drug));
+            _showDialog(context);
+            Navigator.popUntil(context, (route) => route.isFirst);
+          } else if (state.submissionStateEnum.isServerFailure) {
+            AppNotify.showError(errorMessage: state.errorMessage);
+          } else if (state.submissionStateEnum.isInProgress) {
+            AppNotify.showLoading();
+          }
+        },
+        child: DrugIntakeOrderFormView(
+          drug: drug,
+        ),
+      ),
+    );
   }
 }
 

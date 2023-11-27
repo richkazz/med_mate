@@ -178,6 +178,7 @@ class ReportModalBottomSheetContent extends StatelessWidget {
   final ReportCubit reportCubit;
   @override
   Widget build(BuildContext context) {
+    final reportEnum = reportCubit.state.reportEnum;
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
@@ -223,74 +224,94 @@ class ReportModalBottomSheetContent extends StatelessWidget {
             const SizedBox(
               height: AppSpacing.md,
             ),
-            TextButton(
-              onPressed: () {
-                reportCubit.showReportThisMonth();
-                Navigator.pop(context);
-              },
-              child: Text(
-                context.l10n.thisMonth,
-                style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                      fontWeight: FontWeight.w400,
-                    ),
-              ),
-            ),
-            const SizedBox(
-              height: AppSpacing.xs,
-            ),
-            const DrawHorizontalLine(),
-            const SizedBox(
-              height: AppSpacing.xs,
-            ),
-            TextButton(
-              onPressed: () {
-                reportCubit.showReportLastMonth();
-                Navigator.pop(context);
-              },
-              child: Text(
-                context.l10n.lastMonth,
-                style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                      fontWeight: FontWeight.w400,
-                    ),
-              ),
-            ),
-            const SizedBox(
-              height: AppSpacing.md,
-            ),
-            const DrawHorizontalLine(),
-            const SizedBox(
-              height: AppSpacing.xs,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            ReportSelectedRange(
+              isSelected: reportEnum.isReportForThisMonth,
               children: [
                 TextButton(
-                  onPressed: null,
+                  onPressed: () {
+                    reportCubit.showReportThisMonth();
+                    Navigator.pop(context);
+                  },
                   child: Text(
-                    context.l10n.chooseSpecificTime,
+                    context.l10n.thisMonth,
                     style: Theme.of(context).textTheme.labelSmall!.copyWith(
                           fontWeight: FontWeight.w400,
                         ),
                   ),
                 ),
-                IconButton(
-                  onPressed: () async {
-                    Navigator.pop(context);
-                    final dateTimeRange = await showDateRangePicker(
-                      context: context,
-                      firstDate: DateTime(2023),
-                      lastDate: DateTime.now(),
-                    );
-                    if (dateTimeRange.isNotNull) {
-                      unawaited(
-                        reportCubit.showReportCustomRange(dateTimeRange!),
-                      );
-                    }
-                  },
-                  icon: Assets.icons.calendar03
-                      .svg(package: 'app_ui', width: 15, height: 15),
+                const SizedBox(
+                  height: AppSpacing.xs,
                 ),
+                if (reportEnum.isReportForChooseASpecificTime)
+                  const DrawHorizontalLine(),
               ],
+            ),
+            const SizedBox(
+              height: AppSpacing.xs,
+            ),
+            ReportSelectedRange(
+              isSelected: reportEnum.isReportForLastMonth,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    reportCubit.showReportLastMonth();
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    context.l10n.lastMonth,
+                    style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                          fontWeight: FontWeight.w400,
+                        ),
+                  ),
+                ),
+                const SizedBox(
+                  height: AppSpacing.xs,
+                ),
+                if (reportEnum.isReportForChooseASpecificTime)
+                  const DrawHorizontalLine(),
+              ],
+            ),
+            const SizedBox(
+              height: AppSpacing.xs,
+            ),
+            DecoratedBox(
+              decoration: reportEnum.isReportForChooseASpecificTime
+                  ? BoxDecoration(
+                      border: Border.all(color: AppColors.borderColor),
+                      borderRadius: BorderRadius.circular(5),
+                    )
+                  : const BoxDecoration(),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(
+                    onPressed: null,
+                    child: Text(
+                      context.l10n.chooseSpecificTime,
+                      style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                            fontWeight: FontWeight.w400,
+                          ),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () async {
+                      Navigator.pop(context);
+                      final dateTimeRange = await showDateRangePicker(
+                        context: context,
+                        firstDate: DateTime(2023),
+                        lastDate: DateTime.now(),
+                      );
+                      if (dateTimeRange.isNotNull) {
+                        unawaited(
+                          reportCubit.showReportCustomRange(dateTimeRange!),
+                        );
+                      }
+                    },
+                    icon: Assets.icons.calendar03
+                        .svg(package: 'app_ui', width: 15, height: 15),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(
               height: 150,
@@ -314,6 +335,42 @@ class ReportModalBottomSheetContent extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class ReportSelectedRange extends StatelessWidget {
+  const ReportSelectedRange({
+    super.key,
+    required this.children,
+    required this.isSelected,
+  });
+  final List<Widget> children;
+  final bool isSelected;
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: isSelected
+          ? BoxDecoration(
+              border: Border.all(color: AppColors.borderColor),
+              borderRadius: BorderRadius.circular(5),
+            )
+          : const BoxDecoration(),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: children,
+            ),
+          ),
+          if (isSelected)
+            const Padding(
+              padding: EdgeInsets.only(right: AppSpacing.md),
+              child: Icon(Icons.check_circle, color: AppColors.primaryColor),
+            ),
+        ],
       ),
     );
   }

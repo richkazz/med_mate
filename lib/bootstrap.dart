@@ -29,6 +29,7 @@ Future<void> bootstrap(
     DoctorRepository doctorRepository,
     NetworkInfoImpl networkInfoImpl,
     HttpService httpService,
+    NotificationService notificationService,
     AuthenticationRepository authenticationRepository,
   ) builder,
 ) async {
@@ -39,6 +40,7 @@ Future<void> bootstrap(
 
   Bloc.observer = const AppBlocObserver();
   final resultService = ResultService();
+  final notificationService = NotificationService();
   // Add cross-flavor configuration here
   final dataConnectionChecker = DataConnectionChecker();
   final networkInfo = NetworkInfoImpl(dataConnectionChecker);
@@ -65,6 +67,7 @@ Future<void> bootstrap(
       doctorRepository,
       networkInfo,
       httpService,
+      notificationService,
       authService,
     ),
   );

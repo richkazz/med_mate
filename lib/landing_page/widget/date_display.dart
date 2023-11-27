@@ -105,7 +105,7 @@ class _DateSelectorState extends State<DateSelector> {
   @override
   Widget build(BuildContext context) {
     final monthLength = getDaysInEachMonth(_selectedDate.year);
-    return BlocListener<LandingPageCubit, LandingPageState>(
+    return BlocListener<LandingPageBloc, LandingPageState>(
       listenWhen: (previous, current) =>
           current.landingPageEnum.isCalenderSelect,
       listener: (context, state) {

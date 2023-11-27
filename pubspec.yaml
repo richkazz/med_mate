@@ -11,6 +11,7 @@ dependencies:
     path: packages/app_ui
   bloc: ^8.1.2
   data_connection_checker_nulls: ^0.0.2
+  device_info_plus: ^9.1.1
   dio: ^5.3.4
   domain:
     path: packages/domain

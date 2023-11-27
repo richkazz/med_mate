@@ -1,5 +1,7 @@
 // ignore_for_file: public_member_api_docs
-
+import 'dart:async';
+import 'dart:convert';
+import 'dart:isolate';
 import 'package:app_ui/app_ui.dart';
 import 'package:dio/dio.dart';
 import 'package:domain/domain.dart';
@@ -50,36 +52,6 @@ class DrugRepository {
     return _resultService.successful<Drug>(resultDrug);
   }
 
-  /// Converts [MedicationDosageTime] instances to [DosageTimeAndCount].
-  List<DosageTimeAndCount> _getDosageTimeAndCountFromMedicationDosageTime(
-    List<MedicationDosageTime> dosageTimes,
-  ) {
-    return dosageTimes
-        .map(
-          (e) => DosageTimeAndCount(
-            dosageCount: int.tryParse(e.amountOfPill) ?? 1,
-            id: e.id,
-            dosageTimeToBeTaken: _getTimeOfDayFromDateTimeString(e.dosageTime),
-          ),
-        )
-        .toList();
-  }
-
-  /// Converts a date-time string to [TimeOfDay].
-  TimeOfDay _getTimeOfDayFromDateTimeString(String dateTimeString) {
-    var dateTime = DateTime.tryParse(dateTimeString)?.toLocal();
-
-    // Handle null or invalid date-time strings.
-    if (dateTime == null) {
-      return TimeOfDay.now();
-    }
-
-    // Adjust for timezone.
-    dateTime = dateTime.add(const Duration(hours: 1));
-
-    return TimeOfDay(hour: dateTime.hour, minute: dateTime.minute);
-  }
-
   /// Updates an existing drug.
   Future<Result<Drug>> updateDrug(Drug drug, int drugId) async {
     final indexOfDrug = globalTestDrugList.indexWhere((element) {
@@ -103,11 +75,9 @@ class DrugRepository {
       final response = await _httpService.get(
         'medicationschedule/$userId',
       );
-      final addMedicationResponse = (response as List<dynamic>)
-          .map((e) => AddMedicationResponse.fromMap(e as DynamicMap))
-          .toList();
-      final drugs =
-          addMedicationResponse.map(fromAddMedicationResponseToDrug).toList();
+
+      final drugs = await decodeLargeDataList(response as List<dynamic>);
+      //return _resultService.successful(drugs);
       return _resultService.successful(drugs);
     } on NetWorkFailure catch (_) {
       return _resultService
@@ -119,26 +89,6 @@ class DrugRepository {
     } on Exception catch (e) {
       return _resultService.error('Something went wrong');
     }
-  }
-
-  /// Converts [AddMedicationResponse] to [Drug].
-  Drug fromAddMedicationResponseToDrug(
-      AddMedicationResponse addMedicationResponse) {
-    return Drug(
-      drugIntakeIntervalStart:
-          DateTime.tryParse(addMedicationResponse.startDate) ?? DateTime.now(),
-      drugIntakeIntervalEnd:
-          DateTime.tryParse(addMedicationResponse.endDate) ?? DateTime.now(),
-      name: addMedicationResponse.medication.medicationName,
-      intakeForm: addMedicationResponse.medication.medicationForm,
-      reasonForDrug: addMedicationResponse.medication.medicationPurpose,
-      drugIntakeFrequency: addMedicationResponse.frequency,
-      doseTimeAndCount: _getDosageTimeAndCountFromMedicationDosageTime(
-          addMedicationResponse.dosageTimes),
-      orderOfDrugIntake: addMedicationResponse.dosageTimes.isEmpty
-          ? ''
-          : addMedicationResponse.dosageTimes.first.medicationRequirement,
-    );
   }
 
   /// Adds a medication for a given drug and patient.
@@ -216,4 +166,82 @@ class DrugRepository {
       return _resultService.error('Something went wrong');
     }
   }
+}
+
+Future<List<Drug>> decodeLargeDataList(List<dynamic> jsonData) async {
+  final response = ReceivePort();
+  await Isolate.spawn<SendPort>(_decodeLargeDataList, response.sendPort);
+
+  final sendPort = await response.first as SendPort;
+  final answer = ReceivePort();
+  sendPort.send([jsonData, answer.sendPort]);
+  final result = await answer.first;
+  return result as List<Drug>;
+}
+
+/// Converts [AddMedicationResponse] to [Drug].
+Drug fromAddMedicationResponseToDrug(
+  AddMedicationResponse addMedicationResponse,
+) {
+  return Drug(
+    drugIntakeIntervalStart:
+        DateTime.tryParse(addMedicationResponse.startDate) ?? DateTime.now(),
+    drugIntakeIntervalEnd:
+        DateTime.tryParse(addMedicationResponse.endDate) ?? DateTime.now(),
+    name: addMedicationResponse.medication.medicationName,
+    intakeForm: addMedicationResponse.medication.medicationForm,
+    reasonForDrug: addMedicationResponse.medication.medicationPurpose,
+    drugIntakeFrequency: addMedicationResponse.frequency,
+    doseTimeAndCount: _getDosageTimeAndCountFromMedicationDosageTime(
+      addMedicationResponse.dosageTimes,
+    ),
+    orderOfDrugIntake: addMedicationResponse.dosageTimes.isEmpty
+        ? ''
+        : addMedicationResponse.dosageTimes.first.medicationRequirement,
+  );
+}
+
+void _decodeLargeDataList(SendPort sendPort) {
+  final port = ReceivePort();
+  sendPort.send(port.sendPort);
+
+  port.listen((message) {
+    final msg = message as List<dynamic>;
+    final jsonData = msg[0] as List<dynamic>;
+    final send = msg[1] as SendPort;
+
+    final addMedicationResponse = jsonData
+        .map((e) => AddMedicationResponse.fromMap(e as DynamicMap))
+        .toList();
+    final drugs =
+        addMedicationResponse.map(fromAddMedicationResponseToDrug).toList();
+    send.send(drugs);
+  });
+}
+
+/// Converts [MedicationDosageTime] instances to [DosageTimeAndCount].
+List<DosageTimeAndCount> _getDosageTimeAndCountFromMedicationDosageTime(
+  List<MedicationDosageTime> dosageTimes,
+) {
+  return dosageTimes
+      .map(
+        (e) => DosageTimeAndCount(
+          dosageCount: int.tryParse(e.amountOfPill) ?? 1,
+          id: e.id,
+          dosageTimeToBeTaken: _getTimeOfDayFromDateTimeString(e.dosageTime),
+        ),
+      )
+      .toList();
+}
+
+/// Converts a date-time string to [TimeOfDay].
+TimeOfDay _getTimeOfDayFromDateTimeString(String dateTimeString) {
+  var dateTime = DateTime.tryParse(dateTimeString)?.toLocal();
+
+  // Handle null or invalid date-time strings.
+  if (dateTime == null) {
+    return TimeOfDay.now();
+  }
+
+  return TimeOfDay(hour: dateTime.hour, minute: dateTime.minute);
 }
