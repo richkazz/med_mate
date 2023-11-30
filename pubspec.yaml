@@ -13,7 +13,7 @@ dependencies:
   bloc_test: ^9.1.5
   data_connection_checker_nulls: ^0.0.2
   device_info_plus: ^9.1.1
-  dio: ^5.3.4
+  dio: ^5.4.0
   domain:
     path: packages/domain
   equatable: ^2.0.5
